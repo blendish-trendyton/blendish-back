@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - feat/deploy
-      
+
 permissions:
   contents: read
 
@@ -14,80 +14,101 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Grant execute permission for gradlew  # 실행 권한 부여
-      run: chmod +x gradlew
+      - name: Cache Gradle dependencies  # Gradle 캐시 사용하여 빌드 속도 향상
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-    - name: Build with Gradle
-      run: ./gradlew clean build -x test
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-    - name: Prepare artifacts for deployment
-      run: |
-        mkdir -p before-deploy
-        mkdir -p deploy  # zip 파일 저장할 deploy 폴더 생성
+      - name: Build with Gradle
+        run: |
+          ./gradlew dependencies || true  # 캐싱을 활용하기 위한 사전 실행
+          ./gradlew clean build --no-daemon --build-cache -x test  # 빌드 캐시 활성화
 
-        # scripts 폴더가 존재하고 .sh 파일이 있을 때만 복사
-        if [ -d "scripts" ] && [ "$(ls -A scripts/*.sh 2>/dev/null)" ]; then
-          cp scripts/*.sh before-deploy/
-        else
-          echo "⚠️ Warning: No scripts found in scripts/ directory"
-        fi
+      - name: Prepare artifacts for deployment
+        run: |
+          mkdir -p before-deploy
+          mkdir -p deploy  # zip 파일 저장할 deploy 폴더 생성
+          
+          # scripts 폴더가 존재하고 .sh 파일이 있을 때만 복사
+          if [ -d "scripts" ] && [ "$(ls -A scripts/*.sh 2>/dev/null)" ]; then
+            cp scripts/*.sh before-deploy/
+          else
+            echo "⚠️ Warning: No scripts found in scripts/ directory"
+          fi
+          
+          # appspec.yml 복사
+          if [ -f "appspec.yml" ]; then
+            cp appspec.yml before-deploy/
+          else
+            echo "🚨 Error: appspec.yml not found!"
+            exit 1  # 필수 파일 없으면 빌드 중단
+          fi
+          
+          # JAR 파일 복사
+          if ls build/libs/*.jar 1> /dev/null 2>&1; then
+            cp build/libs/*.jar before-deploy/
+          else
+            echo "🚨 Error: No JAR files found in build/libs/"
+            exit 1  # JAR 파일 없으면 빌드 중단
+          fi
+          
+          echo "✅ before-deploy 폴더 내용:"
+          ls -la before-deploy  # 디버깅용
+          
+          # ZIP 생성
+          zip -r deploy/blendish.zip before-deploy/*
+          
+          echo "✅ ZIP 파일 생성 완료: deploy/blendish.zip"
 
-        # appspec.yml 복사
-        if [ -f "appspec.yml" ]; then
-          cp appspec.yml before-deploy/
-        else
-          echo "🚨 Error: appspec.yml not found!"
-          exit 1  # 필수 파일 없으면 빌드 중단
-        fi
+      - name: AWS 자격증명 설정
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
 
-        # JAR 파일 복사
-        if ls build/libs/*.jar 1> /dev/null 2>&1; then
-          cp build/libs/*.jar before-deploy/
-        else
-          echo "🚨 Error: No JAR files found in build/libs/"
-          exit 1  # JAR 파일 없으면 빌드 중단
-        fi
+      - name: S3에 배포
+        run: |
+          aws s3 cp deploy/blendish.zip s3://blendish-build/blendish.zip
+          echo "> S3 업로드 완료: blendish.zip"
+          
+          if ! aws s3 ls s3://blendish-build/blendish.zip; then
+            echo "🚨 S3 업로드 확인 실패"
+            exit 1
+          fi
 
-        echo "✅ before-deploy 폴더 내용:"
-        ls -la before-deploy  # 디버깅용
-
-        # ZIP 생성
-        zip -r deploy/blendish.zip before-deploy/*
-
-        echo "✅ ZIP 파일 생성 완료: deploy/blendish.zip"
-
-    - name: AWS 자격증명 설정
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-        aws-region: ap-northeast-2
-
-    - name: S3에 배포
-      run: |
-        aws s3 cp deploy/blendish.zip s3://blendish-build/blendish.zip
-        echo "> S3 업로드 완료: blendish.zip"
-        aws s3 ls s3://blendish-build/blendish.zip || { echo "S3 업로드 실패"; exit 1; }
-
-    - name: AWS CodeDeploy를 사용한 배포
-      run: |
-        DEPLOYMENT_ID=$(aws deploy create-deployment \
-          --application-name blendish-deploy \
-          --deployment-group-name blendish-deploy-group \
-          --s3-location bucket=blendish-build,key=blendish.zip,bundleType=zip \
-          --region ap-northeast-2 \
-          --query "deploymentId" --output text)
-
-        echo "> 배포 ID: $DEPLOYMENT_ID"
-
-        # 배포 상태 확인
-        aws deploy get-deployment --deployment-id $DEPLOYMENT_ID --region ap-northeast-2
+      - name: AWS CodeDeploy를 사용한 배포
+        run: |
+          DEPLOYMENT_ID=$(aws deploy create-deployment \
+            --application-name blendish-deploy \
+            --deployment-group-name blendish-deploy-group \
+            --s3-location bucket=blendish-build,key=blendish.zip,bundleType=zip \
+            --region ap-northeast-2 \
+            --query "deploymentId" --output text)
+          
+          if [ -z "$DEPLOYMENT_ID" ]; then
+            echo "🚨 배포 실패: Deployment ID를 가져올 수 없음"
+            exit 1
+          fi
+          
+          echo "> 배포 ID: $DEPLOYMENT_ID"
+          
+          # 배포 상태 확인
+          aws deploy get-deployment --deployment-id $DEPLOYMENT_ID --region ap-northeast-2

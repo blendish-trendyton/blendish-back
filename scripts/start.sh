@@ -12,13 +12,17 @@ else
 fi
 
 REPOSITORY=/home/ec2-user/app
+LOG_FILE=$REPOSITORY/nohup.out
+
+echo "> 실행 권한 부여"
+chmod +x $REPOSITORY/zip/*.sh || { echo "❌ 실행 권한 부여 실패"; exit 1; }
 
 echo "> Build 파일을 복사합니다."
 
 if ls "$REPOSITORY"/zip/*.jar 1> /dev/null 2>&1; then
   cp "$REPOSITORY"/zip/*.jar "$REPOSITORY/"
 else
-  echo "> 오류: $REPOSITORY/zip/ 에 jar 파일이 없습니다. 배포를 중단합니다."
+  echo "❌ 오류: $REPOSITORY/zip/ 에 JAR 파일이 없습니다. 배포 중단."
   exit 1
 fi
 
@@ -26,16 +30,22 @@ echo "> 새 애플리케이션 배포"
 JAR_NAME=$(ls -tr "$REPOSITORY"/*.jar 2>/dev/null | tail -n 1)
 
 if [ -z "$JAR_NAME" ]; then
-  echo "> 오류: 배포할 JAR 파일을 찾을 수 없습니다."
+  echo "❌ 오류: 배포할 JAR 파일을 찾을 수 없습니다."
   exit 1
 fi
 
 echo "> JAR NAME: $JAR_NAME"
 
-echo "> $JAR_NAME 에 실행 권한을 부여합니다."
-chmod +x "$JAR_NAME" || { echo "> 오류: 실행 권한을 부여할 수 없습니다."; exit 1; }
+echo "> 실행 권한 부여: $JAR_NAME"
+chmod +x "$JAR_NAME" || { echo "❌ 실행 권한 부여 실패"; exit 1; }
 
 IDLE_PROFILE=$(find_idle_profile)
+
+# IDLE_PROFILE 값이 유효한지 확인
+if [[ -z "$IDLE_PROFILE" ]]; then
+  echo "❌ 오류: IDLE_PROFILE을 찾을 수 없습니다."
+  exit 1
+fi
 
 echo "> 새 애플리케이션을 $IDLE_PROFILE 로 실행합니다."
 
@@ -43,4 +53,8 @@ echo "> 새 애플리케이션을 $IDLE_PROFILE 로 실행합니다."
 nohup java -jar \
   -Dspring.config.location="$REPOSITORY/config/application.yml,$REPOSITORY/config/application-prod.yml,$REPOSITORY/config/application-$IDLE_PROFILE.yml" \
   -Dspring.profiles.active="$IDLE_PROFILE,prod" \
-  "$JAR_NAME" >> "$REPOSITORY/nohup.out" 2>&1 &
+  "$JAR_NAME" > "$LOG_FILE" 2>&1 &
+
+sleep 5
+
+echo "✅ 배포 완료! 로그 확인: tail -f $LOG_FILE"

@@ -11,29 +11,18 @@ permissions:
     pattern: "**"
     owner: ec2-user
     group: ec2-user
-  - object: /home/ec2-user/app/zip/stop.sh
-    owner: ec2-user
-    group: ec2-user
-    mode: 755
-  - object: /home/ec2-user/app/zip/start.sh
-    owner: ec2-user
-    group: ec2-user
-    mode: 755
-  - object: /home/ec2-user/app/zip/health.sh
-    owner: ec2-user
-    group: ec2-user
-    mode: 755
+    mode: 755  # 실행 권한 추가 (start.sh, stop.sh 포함)
 
 hooks:
   AfterInstall:
-    - location: /home/ec2-user/app/zip/stop.sh
+    - location: stop.sh  # 상대 경로 사용
       timeout: 60
       runas: ec2-user
   ApplicationStart:
-    - location: /home/ec2-user/app/zip/start.sh
+    - location: start.sh
       timeout: 60
       runas: ec2-user
   ValidateService:
-    - location: /home/ec2-user/app/zip/health.sh
+    - location: health.sh
       timeout: 60
       runas: ec2-user

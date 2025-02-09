@@ -1,0 +1,39 @@
+version: 0.0
+os: linux
+
+files:
+  - source: .
+    destination: /home/ec2-user/app/zip/
+    overwrite: yes
+
+permissions:
+  - object: /home/ec2-user/app/zip/
+    pattern: "**"
+    owner: ec2-user
+    group: ec2-user
+  - object: /home/ec2-user/app/zip/stop.sh
+    owner: ec2-user
+    group: ec2-user
+    mode: 755
+  - object: /home/ec2-user/app/zip/start.sh
+    owner: ec2-user
+    group: ec2-user
+    mode: 755
+  - object: /home/ec2-user/app/zip/health.sh
+    owner: ec2-user
+    group: ec2-user
+    mode: 755
+
+hooks:
+  AfterInstall:
+    - location: /home/ec2-user/app/zip/stop.sh
+      timeout: 60
+      runas: ec2-user
+  ApplicationStart:
+    - location: /home/ec2-user/app/zip/start.sh
+      timeout: 60
+      runas: ec2-user
+  ValidateService:
+    - location: /home/ec2-user/app/zip/health.sh
+      timeout: 60
+      runas: ec2-user

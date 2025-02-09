@@ -32,10 +32,38 @@ jobs:
     - name: Prepare artifacts for deployment
       run: |
         mkdir -p before-deploy
-        cp scripts/*.sh before-deploy/
-        cp appspec.yml before-deploy/
-        cp build/libs/*.jar before-deploy/
+        mkdir -p deploy  # zip 파일 저장할 deploy 폴더 생성
+
+        # scripts 폴더가 존재하고 .sh 파일이 있을 때만 복사
+        if [ -d "scripts" ] && [ "$(ls -A scripts/*.sh 2>/dev/null)" ]; then
+          cp scripts/*.sh before-deploy/
+        else
+          echo "⚠️ Warning: No scripts found in scripts/ directory"
+        fi
+
+        # appspec.yml 복사
+        if [ -f "appspec.yml" ]; then
+          cp appspec.yml before-deploy/
+        else
+          echo "🚨 Error: appspec.yml not found!"
+          exit 1  # 필수 파일 없으면 빌드 중단
+        fi
+
+        # JAR 파일 복사
+        if ls build/libs/*.jar 1> /dev/null 2>&1; then
+          cp build/libs/*.jar before-deploy/
+        else
+          echo "🚨 Error: No JAR files found in build/libs/"
+          exit 1  # JAR 파일 없으면 빌드 중단
+        fi
+
+        echo "✅ before-deploy 폴더 내용:"
+        ls -la before-deploy  # 디버깅용
+
+        # ZIP 생성
         zip -r deploy/blendish.zip before-deploy/*
+
+        echo "✅ ZIP 파일 생성 완료: deploy/blendish.zip"
 
     - name: AWS 자격증명 설정
       uses: aws-actions/configure-aws-credentials@v2

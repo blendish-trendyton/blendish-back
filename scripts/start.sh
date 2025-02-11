@@ -56,6 +56,6 @@ nohup java -jar \
   -Dspring.profiles.active="$IDLE_PROFILE,prod" \
   "$JAR_NAME" > "$LOG_FILE" 2>&1 &
 
-sleep 5
+sleep 20
 
 echo "✅ 배포 완료! 로그 확인: tail -f $LOG_FILE"

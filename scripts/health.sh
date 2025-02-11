@@ -23,7 +23,15 @@ IDLE_PORT=$(find_idle_port)
 echo "> Health Check Start!"
 echo "> IDLE_PORT: $IDLE_PORT"
 echo "> curl -s http://127.0.0.1:$IDLE_PORT/profile"
-sleep 10
+
+# 1️⃣ IDLE_PORT에서 애플리케이션이 실행되고 있는지 확인
+if ! lsof -i :$IDLE_PORT > /dev/null; then
+  echo "❌ 오류: $IDLE_PORT 포트에서 실행 중인 애플리케이션이 없습니다."
+  exit 1
+fi
+
+# 2️⃣ 애플리케이션이 완전히 기동될 시간을 확보하기 위해 대기 시간 증가
+sleep 20
 
 for RETRY_COUNT in {1..10}
 do
@@ -31,12 +39,16 @@ do
 
   if [ -z "${RESPONSE}" ]; then
     echo "> Health Check 실패: 서버 응답 없음"
+    echo "> 서버가 실행되지 않았거나, '/profile' 엔드포인트가 정상적으로 동작하지 않습니다."
   else
-    UP_COUNT=$(echo "${RESPONSE}" | grep 'real' | wc -l)
+    echo "> Health Check 응답: ${RESPONSE}"
+
+    UP_COUNT=$(echo "${RESPONSE}" | grep -c 'real')
 
     if [[ "${UP_COUNT}" -ge 1 ]]; then
       echo "> Health Check 성공"
 
+      # 3️⃣ switch_proxy 실행 가능 여부 확인 후 실행
       if command -v switch_proxy >/dev/null 2>&1; then
         switch_proxy
       else

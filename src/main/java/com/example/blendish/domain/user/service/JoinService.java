@@ -49,13 +49,12 @@ public class JoinService {
     }
 
     public UserDTO updateUserPreferences(UserPreferencesDTO dto) {
-        Optional<User> optionalUser = userRepository.findByUserId(dto.getUserId());
+        User user = userRepository.findByUserId(dto.getUserId());
 
-        if (optionalUser.isEmpty()) {
+        // User 객체가 null인 경우 예외 발생
+        if (user == null) {
             throw new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
         }
-
-        User user = optionalUser.get();
 
         user.setCountry(dto.getCountry());
         user.setHometown(dto.getHometown());

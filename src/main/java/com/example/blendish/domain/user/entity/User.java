@@ -1,6 +1,7 @@
 package com.example.blendish.domain.user.entity;
 
 
+import com.example.blendish.domain.comments.entity.Comment;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,4 +25,7 @@ public class User {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<TastePreference> tastePreferences;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments ;
 }

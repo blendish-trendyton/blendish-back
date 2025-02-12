@@ -1,5 +1,6 @@
 package com.example.blendish.domain.recipe.entity;
 
+import com.example.blendish.domain.comments.entity.Comment;
 import com.example.blendish.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -46,5 +47,8 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeSteps> steps;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comment ;
 
 }

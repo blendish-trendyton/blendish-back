@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+import org.springframework.data.relational.core.sql.In;
 
 @Entity
 @Getter
@@ -28,8 +29,9 @@ public class Recipe {
     @Column(nullable = false, length = 1)
     private String level;
 
-    @Column(nullable = false, length = 100)
-    private String ingredients;
+    @ElementCollection
+    @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    private List<Ingredient> ingredients;
 
     private int likeCount;
 

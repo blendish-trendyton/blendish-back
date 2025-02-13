@@ -1,6 +1,7 @@
 package com.example.blendish.domain.recipe.service;
 
 import com.example.blendish.domain.recipe.dto.AddRecipeDTO;
+import com.example.blendish.domain.recipe.entity.Ingredient;
 import com.example.blendish.domain.recipe.entity.Recipe;
 import com.example.blendish.domain.recipe.entity.RecipeSteps;
 import com.example.blendish.domain.recipe.repository.RecipeRepository;
@@ -33,10 +34,12 @@ public class RecipeService {
                         .build())
                 .collect(Collectors.toList());
 
+        List<Ingredient> ingredients = addRecipeDTO.ingredients();
+
         Recipe recipe = Recipe.builder()
                 .name(addRecipeDTO.name())
                 .level(addRecipeDTO.level())
-                .ingredients(addRecipeDTO.ingredients())
+                .ingredients(ingredients)
                 .information(addRecipeDTO.information())
                 .foodImage(addRecipeDTO.foodImage())
                 .user(user)

@@ -1,6 +1,7 @@
 package com.example.blendish.domain.recipe.entity;
 
 import com.example.blendish.domain.comments.entity.Comment;
+import com.example.blendish.domain.foodflavor.repository.FoodFlavor;
 import com.example.blendish.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,7 +30,12 @@ public class Recipe {
 
     private int likeCount;
 
+    @Column(nullable = false, length = 100)
+    private String time;
+
     private int scrapCount;
+
+    private int spicyLevel;
 
     @Column(length = 200)
     private String information;
@@ -58,5 +64,8 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Scrap> scraps ;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodFlavor> foodFlavors ;
 
 }

@@ -2,15 +2,21 @@ package com.example.blendish.domain.recipe.entity;
 
 import com.example.blendish.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+import org.springframework.data.relational.core.sql.In;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Recipe {
 
     @Id
@@ -23,8 +29,9 @@ public class Recipe {
     @Column(nullable = false, length = 1)
     private String level;
 
-    @Column(nullable = false, length = 100)
-    private String ingredients;
+    @ElementCollection
+    @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    private List<Ingredient> ingredients;
 
     private int likeCount;
 
@@ -46,5 +53,16 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeSteps> steps;
+
+    @PrePersist
+    protected void onCreate() {
+        this.postDate = new Date();
+        this.updatedDate = this.postDate;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date();
+    }
 
 }

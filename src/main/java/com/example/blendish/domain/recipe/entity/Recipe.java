@@ -29,6 +29,8 @@ public class Recipe {
 
     private int likeCount;
 
+    private int scrapCount;
+
     @Column(length = 200)
     private String information;
 
@@ -50,5 +52,11 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comment ;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Likes> likes ;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Scrap> scraps ;
 
 }

@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommunityHotRecipyDTO {
+public class CommunityTodayRecipeDTO {
     private Long recipeId;
     private String foodImage;
-    private int likeCount;
-    private int commentCount;
+    private String name;
 }

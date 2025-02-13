@@ -1,6 +1,6 @@
 package com.example.blendish.domain.user.config;
 
-import com.example.blendish.domain.user.dto.TastePreferenceDTO;
+import com.example.blendish.domain.user.dto.preference.TastePreferenceDTO;
 import com.example.blendish.domain.user.dto.UserDTO;
 import com.example.blendish.domain.user.entity.TastePreference;
 import com.example.blendish.domain.user.entity.User;

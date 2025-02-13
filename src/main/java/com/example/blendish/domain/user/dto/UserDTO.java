@@ -1,6 +1,6 @@
 package com.example.blendish.domain.user.dto;
 
-import com.example.blendish.domain.user.entity.TastePreference;
+import com.example.blendish.domain.user.dto.preference.TastePreferenceDTO;
 import lombok.Data;
 
 import java.util.List;
@@ -11,5 +11,6 @@ public class UserDTO {
 
     private String userPw,email,hometown,
             country,profilePic;
+    private String role;
     private List<TastePreferenceDTO> tastePreference;
 }

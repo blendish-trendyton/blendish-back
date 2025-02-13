@@ -1,5 +1,6 @@
-package com.example.blendish.domain.user.dto;
+package com.example.blendish.domain.user.dto.preference;
 
+import com.example.blendish.domain.user.dto.preference.TastePreferenceDTO;
 import lombok.Data;
 
 import java.util.List;

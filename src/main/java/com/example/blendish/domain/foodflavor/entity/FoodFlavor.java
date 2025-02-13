@@ -1,7 +1,6 @@
-package com.example.blendish.domain.foodflavor.repository;
+package com.example.blendish.domain.foodflavor.entity;
 
 import com.example.blendish.domain.recipe.entity.Recipe;
-import com.example.blendish.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

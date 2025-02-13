@@ -44,7 +44,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-
+    implementation group: 'ch.simas.qlrm', name: 'qlrm', version: '1.7.1'
 }
 
 tasks.named('test') {

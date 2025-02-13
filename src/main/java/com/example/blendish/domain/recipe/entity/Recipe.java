@@ -1,18 +1,19 @@
 package com.example.blendish.domain.recipe.entity;
 
 import com.example.blendish.domain.comments.entity.Comment;
-import com.example.blendish.domain.foodflavor.repository.FoodFlavor;
+import com.example.blendish.domain.foodflavor.entity.FoodFlavor;
 import com.example.blendish.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Recipe {
 
     @Id
@@ -25,8 +26,9 @@ public class Recipe {
     @Column(nullable = false, length = 1)
     private String level;
 
-    @Column(nullable = false, length = 100)
-    private String ingredients;
+    @ElementCollection
+    @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    private List<Ingredient> ingredients;
 
     private int likeCount;
 
@@ -67,5 +69,16 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FoodFlavor> foodFlavors ;
+
+    @PrePersist
+    protected void onCreate() {
+        this.postDate = new Date();
+        this.updatedDate = this.postDate;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date();
+    }
 
 }

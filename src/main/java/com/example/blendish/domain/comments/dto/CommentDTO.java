@@ -1,18 +1,19 @@
 package com.example.blendish.domain.comments.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class CommnetDTO {
+public class CommentDTO {
+    private Long commentId;
     private String userId;
     private String profilePic;
     private String content;
     private Date createdAt;
-    private int numOfReply;
+    private Long numOfReply;
 }

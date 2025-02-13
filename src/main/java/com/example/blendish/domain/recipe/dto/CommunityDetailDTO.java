@@ -1,12 +1,7 @@
 package com.example.blendish.domain.recipe.dto;
 
-import com.example.blendish.domain.comments.dto.CommnetDTO;
-import com.example.blendish.domain.comments.entity.Comment;
-import com.example.blendish.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.blendish.domain.comments.dto.CommentDTO;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CommunityDetailDTO {
     private Long recipeId;
     private String foodImage;
@@ -31,6 +27,6 @@ public class CommunityDetailDTO {
     private int likeCount;
     private int commentCount;
     private String information;
-    private List<CommnetDTO> commentDTOList;
+    private List<CommentDTO> commentDTOList;
     private List<String> flavor;
 }

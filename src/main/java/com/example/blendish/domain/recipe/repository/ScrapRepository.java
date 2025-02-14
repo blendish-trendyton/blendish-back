@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ScrapRepository extends JpaRepository<Scrap,Long> {
 
-    void deleteByRecipeRecipeIdAndUserId(Long recipeId,Long userId);
+//    void deleteByRecipeRecipeIdAndUserId(Long recipeId,Long userId);
 }

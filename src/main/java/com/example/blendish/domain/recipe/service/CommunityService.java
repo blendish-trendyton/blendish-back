@@ -128,84 +128,84 @@ public class CommunityService {
     }
 
     // 좋아요 클릭시
-    public void insertLike(@RequestBody Long recipeId){
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if (authentication != null && authentication.getPrincipal() instanceof User) {
-                User user = (User) authentication.getPrincipal();
-
-                log.info(user.getUserId());
-                log.info(user.getEmail());
-
-                // Recipe 조회
-                Recipe recipe = recipeRepository.findByRecipeId(recipeId);
-
-                // Like 객체 생성
-                Likes like = new Likes();
-                like.setUser(user);
-                like.setRecipe(recipe);
-
-                // Likes 저장
-                likeRepository.save(like);
-
-                // 레시피의 likecount 증가
-                recipeRepository.incrementLikeCount(recipeId);
-            }
-        }
-
-    // 좋아요 삭제시
-    public void removeLike(Long recipeId){
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            User user = (User) authentication.getPrincipal();
-
-            // Likes 삭제
-            likeRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
-
-            // 레시피의 likecount 감소
-            recipeRepository.decrementLikeCount(recipeId);
-        }
-    }
-
-    // 스크랩 등록시
-    public void insertScrap(Long recipeId){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            User user = (User) authentication.getPrincipal();
-
-            // Recipe 조회
-            Recipe recipe = recipeRepository.findByRecipeId(recipeId);
-
-            // 스크랩 객체 생성
-            Scrap scrap = new Scrap();
-            scrap.setUser(user);
-            scrap.setRecipe(recipe);
-
-            // Likes 저장
-            scrapRepository.save(scrap);
-
-            // 레시피의 likecount 증가
-            recipeRepository.incrementScrapCount(recipeId);
-        }
-    }
-
-    // 스크랩 삭제시
-    public void removeScrap(Long recipeId){
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            User user = (User) authentication.getPrincipal();
-
-            // Likes 삭제
-            scrapRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
-
-            // 레시피의 likecount 감소
-            recipeRepository.decrementScrapCount(recipeId);
-        }
-    }
+//    public void insertLike(@RequestBody Long recipeId){
+//
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//            if (authentication != null && authentication.getPrincipal() instanceof User) {
+//                User user = (User) authentication.getPrincipal();
+//
+//                log.info(user.getUserId());
+//                log.info(user.getEmail());
+//
+//                // Recipe 조회
+//                Recipe recipe = recipeRepository.findByRecipeId(recipeId);
+//
+//                // Like 객체 생성
+//                Likes like = new Likes();
+//                like.setUser(user);
+//                like.setRecipe(recipe);
+//
+//                // Likes 저장
+//                likeRepository.save(like);
+//
+//                // 레시피의 likecount 증가
+//                recipeRepository.incrementLikeCount(recipeId);
+//            }
+//        }
+//
+//    // 좋아요 삭제시
+//    public void removeLike(Long recipeId){
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication != null && authentication.getPrincipal() instanceof User) {
+//            User user = (User) authentication.getPrincipal();
+//
+//            // Likes 삭제
+//            likeRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
+//
+//            // 레시피의 likecount 감소
+//            recipeRepository.decrementLikeCount(recipeId);
+//        }
+//    }
+//
+//    // 스크랩 등록시
+//    public void insertScrap(Long recipeId){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication != null && authentication.getPrincipal() instanceof User) {
+//            User user = (User) authentication.getPrincipal();
+//
+//            // Recipe 조회
+//            Recipe recipe = recipeRepository.findByRecipeId(recipeId);
+//
+//            // 스크랩 객체 생성
+//            Scrap scrap = new Scrap();
+//            scrap.setUser(user);
+//            scrap.setRecipe(recipe);
+//
+//            // Likes 저장
+//            scrapRepository.save(scrap);
+//
+//            // 레시피의 likecount 증가
+//            recipeRepository.incrementScrapCount(recipeId);
+//        }
+//    }
+//
+//    // 스크랩 삭제시
+//    public void removeScrap(Long recipeId){
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication != null && authentication.getPrincipal() instanceof User) {
+//            User user = (User) authentication.getPrincipal();
+//
+//            // Likes 삭제
+//            scrapRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
+//
+//            // 레시피의 likecount 감소
+//            recipeRepository.decrementScrapCount(recipeId);
+//        }
+//    }
 }

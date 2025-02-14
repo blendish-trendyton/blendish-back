@@ -22,26 +22,26 @@ spring:
   jwt:
     secret: ${JWT_SECRET}
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-name: google
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
+            authorization-grant-type: authorization_code
+            scope: profile, email
+
 openai:
   api:
     key: ${OPEN_AI_API_KEY}
 
-security:
-  oauth2:
-    client:
-      registration:
-        google:
-          client-name: google
-          client-id: ${GOOGLE_CLIENT_ID}
-          client-secret: ${GOOGLE_CLIENT_SECRET}
-          redirect-uri: ${GOOGLE_REDIRECT_URI}
-          authorization-grant-type: authorization_code
-          scope: profile, email
-
 cloud:
   aws:
     s3:
-      bucketName: ${AWS_S3_BUCKET_NAME}
+      bucket-name: ${AWS_S3_BUCKET_NAME}
     credentials:
       access-key: ${AWS_ACCESS_KEY_ID}
       secret-key: ${AWS_SECRET_ACCESS_KEY}

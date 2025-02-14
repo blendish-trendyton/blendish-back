@@ -8,8 +8,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "ingredient")
-public class Ingredient {
+@Table(name = "ai_ingredient")
+public class AiIngredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,6 @@ public class Ingredient {
     private String amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
+    @JoinColumn(name = "ai_recipe_id", nullable = false)
+    private AiRecipe aiRecipe;
 }

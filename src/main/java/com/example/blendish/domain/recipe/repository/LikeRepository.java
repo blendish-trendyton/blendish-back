@@ -21,4 +21,8 @@ public interface LikeRepository extends JpaRepository<Likes, Long> {
             "GROUP BY l.recipe.recipeId " +
             "ORDER BY COUNT(l) DESC")
     List<LiketenRecipeDTO> findTopTenLikedRecipeIds(Pageable pageable);
+
+
+    boolean existsByUser_IdAndRecipe_RecipeId(@Param("userId") Long userId, @Param("recipeId")Long recipeId);
+
 }

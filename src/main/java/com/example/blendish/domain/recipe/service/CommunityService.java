@@ -23,7 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.geom.FlatteningPathIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,20 +128,39 @@ public class CommunityService {
                 .build();
 
     }
+    // 이미 좋아요햔 like 인지 찾기
+    public boolean lsHaveLike(Long recipeId) {
+        //없는경우
+        boolean isHave = true;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            User user = userRepository.findByUserId(userDetails.getUsername());
+
+            //있으면 false
+            isHave = likeRepository.existsByUser_IdAndRecipe_RecipeId(recipeId, user.getId());
+
+            return isHave;
+        } else {
+            log.warn("Authentication null or 인증오류");
+
+            return false;
+        }
+    }
 
     // 좋아요 클릭시
+    @Transactional
     public void insertLike(Long recipeId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            User user = userRepository.findByUserId(userDetails.getUsername());
 
-
-
-            User user = userDetails.getUser();
 
             // 사용자 이름 출력
-            log.info("Username: " + userDetails.getUsername());
+            log.info("Username: " + user.getEmail());
 
 
             // Recipe 조회

@@ -3,12 +3,15 @@ package com.example.blendish.controller;
 import com.example.blendish.domain.recipe.dto.*;
 import com.example.blendish.domain.recipe.service.CommunityService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
+import com.example.blendish.global.response.ErrorCode;
 import com.example.blendish.global.response.SuccessCode;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Printable;
 import java.util.List;
 
 @Tag(name = "Community Controller", description = "커뮤니티 관련 API")
@@ -45,13 +48,20 @@ public class CommunityController {
     }
 
     // 좋아요 클릭시
-    @PostMapping("/updateLike")
-    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
+    @PostMapping("/updateLike/{recipeId}")
+    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@PathVariable("recipeId") Long recipeId) {
+        try {
+            if(!communityService.lsHaveLike(recipeId)){
+                return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+            }
+            communityService.insertLike(recipeId);
+            return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null));
 
-        communityService.insertLike(recipeId);
-
-        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+        } catch (Exception ex) {
+            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+        }
     }
+
 
 //    // 좋아요 삭제시
 //    @PostMapping("/deleteLike")

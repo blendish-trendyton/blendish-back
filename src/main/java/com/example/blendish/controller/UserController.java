@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+
 @Tag(name = "User Controller", description = "사용자 관리 관련 API")
 @Controller
 @RequestMapping("/api/user")
@@ -59,8 +60,23 @@ public class UserController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
+        System.out.println(userId);
 
         boolean result = userService.checkPassword(userId, dto.getPassword());
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, result));
     }
+
+    @Operation(
+            summary = "현재 로그인된 사용자 조회",
+            description = "토큰에 포함된 사용자 ID를 기반으로 전체 사용자 데이터를 반환한다."
+    )
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponseTemplate<UserDTO>> getUserById() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        System.out.println(userId);
+        UserDTO userDTO = userService.getUserById(userId);
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, userDTO));
+    }
+
 }

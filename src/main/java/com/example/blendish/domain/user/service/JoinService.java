@@ -3,7 +3,7 @@ package com.example.blendish.domain.user.service;
 import com.example.blendish.domain.user.config.UserMapper;
 import com.example.blendish.domain.user.dto.JoinDTO;
 import com.example.blendish.domain.user.dto.UserDTO;
-import com.example.blendish.domain.user.dto.UserPreferencesDTO;
+import com.example.blendish.domain.user.dto.preference.UserPreferencesDTO;
 import com.example.blendish.domain.user.entity.TastePreference;
 import com.example.blendish.domain.user.entity.User;
 import com.example.blendish.domain.user.repository.TastePreferenceRepository;
@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

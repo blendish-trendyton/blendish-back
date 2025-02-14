@@ -6,25 +6,37 @@ import com.example.blendish.domain.comments.repository.CommentsRepository;
 import com.example.blendish.domain.recipe.dto.CommunityDetailDTO;
 import com.example.blendish.domain.recipe.dto.CommunityHotRecipeDTO;
 import com.example.blendish.domain.recipe.dto.CommunityTodayRecipeDTO;
+import com.example.blendish.domain.recipe.entity.Likes;
 import com.example.blendish.domain.recipe.entity.Recipe;
+import com.example.blendish.domain.recipe.entity.Scrap;
 import com.example.blendish.domain.recipe.repository.LikeRepository;
 import com.example.blendish.domain.recipe.repository.RecipeRepository;
+import com.example.blendish.domain.recipe.repository.ScrapRepository;
+import com.example.blendish.domain.user.entity.User;
 import io.jsonwebtoken.lang.Collections;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.relational.core.sql.Like;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CommunityService {
     private final RecipeRepository recipeRepository;
     private final LikeRepository likeRepository;
     private final CommentsRepository commentsRepository;
+    private final ScrapRepository scrapRepository;
 
     // 인기 레시피 가져오는 서비스
     public List<CommunityHotRecipeDTO> getTopLikedRecipes() {
@@ -113,5 +125,87 @@ public class CommunityService {
                 .flavor(flavorList)
                 .build();
 
+    }
+
+    // 좋아요 클릭시
+    public void insertLike(@RequestBody Long recipeId){
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication != null && authentication.getPrincipal() instanceof User) {
+                User user = (User) authentication.getPrincipal();
+
+                log.info(user.getUserId());
+                log.info(user.getEmail());
+
+                // Recipe 조회
+                Recipe recipe = recipeRepository.findByRecipeId(recipeId);
+
+                // Like 객체 생성
+                Likes like = new Likes();
+                like.setUser(user);
+                like.setRecipe(recipe);
+
+                // Likes 저장
+                likeRepository.save(like);
+
+                // 레시피의 likecount 증가
+                recipeRepository.incrementLikeCount(recipeId);
+            }
+        }
+
+    // 좋아요 삭제시
+    public void removeLike(Long recipeId){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            User user = (User) authentication.getPrincipal();
+
+            // Likes 삭제
+            likeRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
+
+            // 레시피의 likecount 감소
+            recipeRepository.decrementLikeCount(recipeId);
+        }
+    }
+
+    // 스크랩 등록시
+    public void insertScrap(Long recipeId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            User user = (User) authentication.getPrincipal();
+
+            // Recipe 조회
+            Recipe recipe = recipeRepository.findByRecipeId(recipeId);
+
+            // 스크랩 객체 생성
+            Scrap scrap = new Scrap();
+            scrap.setUser(user);
+            scrap.setRecipe(recipe);
+
+            // Likes 저장
+            scrapRepository.save(scrap);
+
+            // 레시피의 likecount 증가
+            recipeRepository.incrementScrapCount(recipeId);
+        }
+    }
+
+    // 스크랩 삭제시
+    public void removeScrap(Long recipeId){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            User user = (User) authentication.getPrincipal();
+
+            // Likes 삭제
+            scrapRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
+
+            // 레시피의 likecount 감소
+            recipeRepository.decrementScrapCount(recipeId);
+        }
     }
 }

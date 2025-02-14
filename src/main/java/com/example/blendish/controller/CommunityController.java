@@ -9,10 +9,7 @@ import com.example.blendish.global.response.SuccessCode;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,6 +45,35 @@ public class CommunityController {
 
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, detailDTOS));
     }
+
+    // 좋아요 클릭시
+    @PostMapping("/updateLike")
+    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
+
+        communityService.insertLike(recipeId);
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+    }
+
+    // 좋아요 삭제시
+    @PostMapping("/deleteLike")
+    public ResponseEntity<ApiResponseTemplate<?>> deleteLike(@RequestBody Long recipeId) {
+
+        communityService.removeLike(recipeId);
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+    }
+
+    // 스크랩 클릭시
+    @PostMapping("/updateScrap")
+    public ResponseEntity<ApiResponseTemplate<?>> updatScrap(@RequestBody Long recipeId) {
+
+        communityService.insertScrap(recipeId);
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+    }
+
+
 
 
 }

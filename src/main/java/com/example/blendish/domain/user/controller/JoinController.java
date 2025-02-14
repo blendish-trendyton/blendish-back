@@ -3,7 +3,7 @@ package com.example.blendish.domain.user.controller;
 import com.example.blendish.domain.user.dto.CheckUserIdDTO;
 import com.example.blendish.domain.user.dto.JoinDTO;
 import com.example.blendish.domain.user.dto.UserDTO;
-import com.example.blendish.domain.user.dto.UserPreferencesDTO;
+import com.example.blendish.domain.user.dto.preference.UserPreferencesDTO;
 import com.example.blendish.domain.user.entity.User;
 import com.example.blendish.domain.user.service.JoinService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+
 @Tag(name = "JoinController",description = "로그인, 회원가입 관련 API")
 @Controller
 @RequestMapping("/join")

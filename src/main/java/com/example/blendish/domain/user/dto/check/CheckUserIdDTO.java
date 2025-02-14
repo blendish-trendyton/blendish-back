@@ -1,4 +1,4 @@
-package com.example.blendish.domain.user.dto;
+package com.example.blendish.domain.user.dto.check;
 
 import lombok.Data;
 

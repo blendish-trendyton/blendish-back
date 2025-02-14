@@ -1,6 +1,6 @@
 package com.example.blendish.domain.user.controller;
 
-import com.example.blendish.domain.user.dto.CheckUserIdDTO;
+import com.example.blendish.domain.user.dto.check.CheckUserIdDTO;
 import com.example.blendish.domain.user.dto.JoinDTO;
 import com.example.blendish.domain.user.dto.UserDTO;
 import com.example.blendish.domain.user.dto.preference.UserPreferencesDTO;

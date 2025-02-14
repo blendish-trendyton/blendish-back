@@ -14,12 +14,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "recipe")
-public class Recipe {
+@Table(name = "ai_recipe")
+public class AiRecipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long recipeId;
+    private Long aiRecipeId;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -27,8 +27,8 @@ public class Recipe {
     @Column(nullable = false, length = 1)
     private String level;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ingredient> ingredients;
+    @OneToMany(mappedBy = "aiRecipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AiIngredient> ingredients;
 
     private int likeCount;
 
@@ -55,19 +55,19 @@ public class Recipe {
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "aiRecipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeSteps> steps;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "aiRecipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comment;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "aiRecipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likes;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "aiRecipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Scrap> scraps;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "aiRecipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FoodFlavor> foodFlavors;
 
     @PrePersist
@@ -80,4 +80,5 @@ public class Recipe {
     protected void onUpdate() {
         this.updatedDate = new Date();
     }
+
 }

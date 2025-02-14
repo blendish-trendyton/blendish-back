@@ -15,7 +15,7 @@ import java.io.InputStream;
 public class S3UploadService {
 
     private final AmazonS3 amazonS3;
-    @Value("${cloud.aws.s3.bucketName}")
+    @Value("${cloud.aws.s3.bucket-name}")
     private String bucket;
 
     public String saveFile(MultipartFile multipartFile) throws IOException {

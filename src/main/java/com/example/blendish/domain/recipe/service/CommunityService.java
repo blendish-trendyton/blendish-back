@@ -180,23 +180,26 @@ public class CommunityService {
 
 }
 
-//    // 좋아요 삭제시
-//    public void removeLike(Long recipeId){
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication != null && authentication.getPrincipal() instanceof User) {
-//            User user = (User) authentication.getPrincipal();
-//
-//            // Likes 삭제
-//            likeRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
-//
-//            // 레시피의 likecount 감소
-//            recipeRepository.decrementLikeCount(recipeId);
-//        }
-//    }
-//
+//   좋아요 삭제시
+    @Transactional
+    public void removeLike(Long recipeId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+            // 유저 객체
+            User user = userRepository.findByUserId(userDetails.getUsername());
+
+            // Likes 삭제
+            likeRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
+
+            // 레시피의 likecount 감소
+            recipeRepository.decrementLikeCount(recipeId);
+        }
+    }
+
 //    // 스크랩 등록시
+//@Transactional
 //    public void insertScrap(Long recipeId){
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //
@@ -220,6 +223,7 @@ public class CommunityService {
 //    }
 //
 //    // 스크랩 삭제시
+//@Transactional
 //    public void removeScrap(Long recipeId){
 //
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

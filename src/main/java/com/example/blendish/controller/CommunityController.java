@@ -64,14 +64,23 @@ public class CommunityController {
 
 
 //    // 좋아요 삭제시
-//    @PostMapping("/deleteLike")
-//    public ResponseEntity<ApiResponseTemplate<?>> deleteLike(@RequestBody Long recipeId) {
+    @PostMapping("/deleteLike")
+    public ResponseEntity<ApiResponseTemplate<?>> deleteLike(@RequestBody Long recipeId) {
+
+        communityService.removeLike(recipeId);
+
+         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+//        try {
+//            communityService.removeLike(recipeId);
 //
-//        communityService.removeLike(recipeId);
+//            return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
 //
-//        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
-//    }
-//
+//        } catch (Exception ex) {
+//            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+//        }
+
+    }
+
 //    // 스크랩 클릭시
 //    @PostMapping("/updateScrap")
 //    public ResponseEntity<ApiResponseTemplate<?>> updatScrap(@RequestBody Long recipeId) {

@@ -1,13 +1,12 @@
 package com.example.blendish.domain.recipe.repository;
 
-import com.example.blendish.domain.recipe.entity.Ingredient;
 import com.example.blendish.domain.recipe.entity.Recipe;
 import com.example.blendish.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -27,16 +26,16 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     // like 감소
     @Modifying
     @Query("UPDATE Recipe r SET r.likeCount = r.likeCount - 1 WHERE r.recipeId = :recipeId")
-    void decrementLikeCount(Long recipeId);
+    void decrementLikeCount(@Param("recipeId") Long recipeId);
 
     // 스크랩 증가
     @Modifying
     @Query("UPDATE Recipe r SET r.scrapCount = r.scrapCount + 1 WHERE r.recipeId = :recipeId")
-    void incrementScrapCount(Long recipeId);
+    void incrementScrapCount(@Param("recipeId") Long recipeId);
 
     @Modifying
     @Query("UPDATE Recipe r SET r.scrapCount = r.likeCount - 1 WHERE r.recipeId = :recipeId")
-    void decrementScrapCount(Long recipeId);
+    void decrementScrapCount(@Param("recipeId") Long recipeId);
 
 
 }

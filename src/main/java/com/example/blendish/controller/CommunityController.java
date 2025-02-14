@@ -47,31 +47,31 @@ public class CommunityController {
     }
 
     // 좋아요 클릭시
-    @PostMapping("/updateLike")
-    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
-
-        communityService.insertLike(recipeId);
-
-        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
-    }
-
-    // 좋아요 삭제시
-    @PostMapping("/deleteLike")
-    public ResponseEntity<ApiResponseTemplate<?>> deleteLike(@RequestBody Long recipeId) {
-
-        communityService.removeLike(recipeId);
-
-        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
-    }
-
-    // 스크랩 클릭시
-    @PostMapping("/updateScrap")
-    public ResponseEntity<ApiResponseTemplate<?>> updatScrap(@RequestBody Long recipeId) {
-
-        communityService.insertScrap(recipeId);
-
-        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
-    }
+//    @PostMapping("/updateLike")
+//    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
+//
+//        communityService.insertLike(recipeId);
+//
+//        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+//    }
+//
+//    // 좋아요 삭제시
+//    @PostMapping("/deleteLike")
+//    public ResponseEntity<ApiResponseTemplate<?>> deleteLike(@RequestBody Long recipeId) {
+//
+//        communityService.removeLike(recipeId);
+//
+//        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+//    }
+//
+//    // 스크랩 클릭시
+//    @PostMapping("/updateScrap")
+//    public ResponseEntity<ApiResponseTemplate<?>> updatScrap(@RequestBody Long recipeId) {
+//
+//        communityService.insertScrap(recipeId);
+//
+//        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+//    }
 
 
 

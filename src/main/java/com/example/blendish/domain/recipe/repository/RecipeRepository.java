@@ -19,23 +19,23 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findByUser(User user);
 
     // like 증가
-//    @Modifying
-//    @Query("UPDATE Recipe r SET r.likeCount = r.likeCount + 1 WHERE r.recipeId = :recipeId")
-//    void incrementLikeCount(Long recipeId);
-//
-//    // like 감소
-//    @Modifying
-//    @Query("UPDATE Recipe r SET r.likeCount = r.likeCount - 1 WHERE r.recipeId = :recipeId")
-//    void decrementLikeCount(Long recipeId);
-//
-//    // 스크랩 증가
-//    @Modifying
-//    @Query("UPDATE Recipe r SET r.scrapCount = r.scrapCount + 1 WHERE r.recipeId = :recipeId")
-//    void incrementScrapCount(Long recipeId);
-//
-//    @Modifying
-//    @Query("UPDATE Recipe r SET r.scrapCount = r.likeCount - 1 WHERE r.recipeId = :recipeId")
-//    void decrementScrapCount(Long recipeId);
+    @Modifying
+    @Query("UPDATE Recipe r SET r.likeCount = r.likeCount + 1 WHERE r.recipeId = :recipeId")
+    void incrementLikeCount(Long recipeId);
+
+    // like 감소
+    @Modifying
+    @Query("UPDATE Recipe r SET r.likeCount = r.likeCount - 1 WHERE r.recipeId = :recipeId")
+    void decrementLikeCount(Long recipeId);
+
+    // 스크랩 증가
+    @Modifying
+    @Query("UPDATE Recipe r SET r.scrapCount = r.scrapCount + 1 WHERE r.recipeId = :recipeId")
+    void incrementScrapCount(Long recipeId);
+
+    @Modifying
+    @Query("UPDATE Recipe r SET r.scrapCount = r.likeCount - 1 WHERE r.recipeId = :recipeId")
+    void decrementScrapCount(Long recipeId);
 
 
 }

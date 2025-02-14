@@ -1,9 +1,6 @@
 package com.example.blendish.controller;
 
-import com.example.blendish.domain.recipe.dto.CommunityDetailDTO;
-import com.example.blendish.domain.recipe.dto.CommunityHotRecipeDTO;
-import com.example.blendish.domain.recipe.dto.CommunityTodayRecipeDTO;
-import com.example.blendish.domain.recipe.dto.RecipeDetailDTO;
+import com.example.blendish.domain.recipe.dto.*;
 import com.example.blendish.domain.recipe.service.CommunityService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.SuccessCode;
@@ -48,14 +45,14 @@ public class CommunityController {
     }
 
     // 좋아요 클릭시
-//    @PostMapping("/updateLike")
-//    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
-//
-//        communityService.insertLike(recipeId);
-//
-//        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
-//    }
-//
+    @PostMapping("/updateLike")
+    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
+
+        communityService.insertLike(recipeId);
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+    }
+
 //    // 좋아요 삭제시
 //    @PostMapping("/deleteLike")
 //    public ResponseEntity<ApiResponseTemplate<?>> deleteLike(@RequestBody Long recipeId) {
@@ -83,7 +80,14 @@ public class CommunityController {
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, recipeDetailDTO));
     }
 
+    // 상위 10 개 레시피
+    @GetMapping("/getTenhigher")
+    public ResponseEntity<ApiResponseTemplate<List<LiketenRecipeDTO>>> getTenHigher(){
 
+        List<LiketenRecipeDTO> likeTenRecipeDTO = communityService.getTenRecipe();
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, likeTenRecipeDTO));
+    }
 
 
 }

@@ -3,6 +3,7 @@ package com.example.blendish.controller;
 import com.example.blendish.domain.recipe.dto.CommunityDetailDTO;
 import com.example.blendish.domain.recipe.dto.CommunityHotRecipeDTO;
 import com.example.blendish.domain.recipe.dto.CommunityTodayRecipeDTO;
+import com.example.blendish.domain.recipe.dto.RecipeDetailDTO;
 import com.example.blendish.domain.recipe.service.CommunityService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.SuccessCode;
@@ -72,6 +73,15 @@ public class CommunityController {
 //
 //        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
 //    }
+
+    //레시피 전체 디테일
+    @GetMapping("/AllDetailRecipe")
+    public ResponseEntity<ApiResponseTemplate<RecipeDetailDTO>> getAllDetail(@RequestParam(name = "recipeId") Long recipeId) {
+
+        RecipeDetailDTO recipeDetailDTO = communityService.getAllDetail(recipeId);
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, recipeDetailDTO));
+    }
 
 
 

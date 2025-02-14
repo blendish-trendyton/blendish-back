@@ -1,30 +1,23 @@
 package com.example.blendish.domain.recipe.service;
 
 import com.example.blendish.domain.comments.dto.CommentDTO;
-import com.example.blendish.domain.comments.entity.Comment;
 import com.example.blendish.domain.comments.repository.CommentsRepository;
 import com.example.blendish.domain.recipe.dto.CommunityDetailDTO;
 import com.example.blendish.domain.recipe.dto.CommunityHotRecipeDTO;
 import com.example.blendish.domain.recipe.dto.CommunityTodayRecipeDTO;
-import com.example.blendish.domain.recipe.entity.Likes;
+import com.example.blendish.domain.recipe.dto.RecipeDetailDTO;
 import com.example.blendish.domain.recipe.entity.Recipe;
-import com.example.blendish.domain.recipe.entity.Scrap;
+import com.example.blendish.domain.recipe.entity.RecipeSteps;
 import com.example.blendish.domain.recipe.repository.LikeRepository;
 import com.example.blendish.domain.recipe.repository.RecipeRepository;
 import com.example.blendish.domain.recipe.repository.ScrapRepository;
-import com.example.blendish.domain.user.entity.User;
+import com.example.blendish.domain.recipesteps.dto.RecipeStepsDTO;
+import com.example.blendish.domain.recipesteps.repository.RecipestepsRepository;
 import io.jsonwebtoken.lang.Collections;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.relational.core.sql.Like;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +30,7 @@ public class CommunityService {
     private final LikeRepository likeRepository;
     private final CommentsRepository commentsRepository;
     private final ScrapRepository scrapRepository;
+    private final RecipestepsRepository recipestepsRepository;
 
     // 인기 레시피 가져오는 서비스
     public List<CommunityHotRecipeDTO> getTopLikedRecipes() {
@@ -208,4 +202,26 @@ public class CommunityService {
 //            recipeRepository.decrementScrapCount(recipeId);
 //        }
 //    }
+
+    // 레시피 디테일 띄우기
+    public RecipeDetailDTO getAllDetail(Long recipeId){
+
+        Recipe recipe = recipeRepository.findByRecipeId(recipeId);
+        RecipeSteps recipeSteps =recipestepsRepository.findByRecipeRecipeId(recipeId);
+
+        RecipeStepsDTO recipeStepsDTO = new RecipeStepsDTO(recipeSteps.getDetails(),recipeSteps.getStepImage(),
+                recipeSteps.getStepNum());
+
+
+        return RecipeDetailDTO.builder()
+                .recipeId(recipeId)
+                .time(recipe.getTime())
+                .level(recipe.getLevel())
+                .name(recipe.getName())
+                .ingredients(recipe.getIngredients())
+                .recipeSteps(recipeStepsDTO)
+                .build();
+
+    }
+
 }

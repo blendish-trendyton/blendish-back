@@ -1,5 +1,6 @@
 package com.example.blendish.domain.recipe.repository;
 
+import com.example.blendish.domain.recipe.entity.Ingredient;
 import com.example.blendish.domain.recipe.entity.Recipe;
 import com.example.blendish.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,5 +36,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 //    @Modifying
 //    @Query("UPDATE Recipe r SET r.scrapCount = r.likeCount - 1 WHERE r.recipeId = :recipeId")
 //    void decrementScrapCount(Long recipeId);
+
 
 }

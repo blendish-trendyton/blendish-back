@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentsRepository extends JpaRepository<Comment,Long> {
     // 해당 recipeId에 대한 댓글 개수 카운트
@@ -27,7 +28,9 @@ public interface CommentsRepository extends JpaRepository<Comment,Long> {
     @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.replies WHERE c.recipe.recipeId = :recipeId AND c.parentComment IS NULL")
     List<Comment> getCommentsByRecipeRecipeId(@Param("recipeId") Long recipeId);
 
-    // 댓글 작성
-   // void InsertComment(@Param("recipeId") Long recipeId, @Param("parentCommentId") Long parentCommentId);
+    // 부모댓글 가져오기
+    Comment findByCommentId(Long commentId);
+
+
 
 }

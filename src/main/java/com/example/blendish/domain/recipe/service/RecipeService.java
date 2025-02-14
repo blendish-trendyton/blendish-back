@@ -7,6 +7,7 @@ import com.example.blendish.domain.recipe.entity.RecipeSteps;
 import com.example.blendish.domain.recipe.repository.RecipeRepository;
 import com.example.blendish.domain.user.entity.User;
 import com.example.blendish.domain.user.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
 
-    public void createRecipe(AddRecipeDTO addRecipeDTO, String userId) {
+    public void createRecipe(AddRecipeDTO addRecipeDTO, String userId, String imageUrl) {
         User user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new IllegalArgumentException("유저를 찾을 수 없습니다.");
@@ -41,7 +42,7 @@ public class RecipeService {
                 .level(addRecipeDTO.level())
                 .ingredients(ingredients)
                 .information(addRecipeDTO.information())
-                .foodImage(addRecipeDTO.foodImage())
+                .foodImage(imageUrl)
                 .user(user)
                 .steps(steps)
                 .build();

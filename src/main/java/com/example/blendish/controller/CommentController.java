@@ -1,5 +1,6 @@
 package com.example.blendish.controller;
 
+import com.example.blendish.domain.comments.dto.CommentAllDTO;
 import com.example.blendish.domain.comments.dto.CommentDTO;
 import com.example.blendish.domain.comments.service.CommentService;
 import com.example.blendish.domain.recipe.dto.CommunityHotRecipeDTO;
@@ -28,5 +29,13 @@ public class CommentController {
 
         List<CommentDTO> commentDTOList = commentService.getParentCommnet(recipeId);
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, commentDTOList));
+    }
+
+    // 전체 댓글 띄우기
+    @GetMapping("/AllComment")
+    public ResponseEntity<ApiResponseTemplate<List<CommentAllDTO>>> getAllComment(@RequestParam(name = "recipeId") Long recipeId) {
+
+        List<CommentAllDTO> commentAllDTOList = commentService.getAllComment(recipeId);
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, commentAllDTOList));
     }
 }

@@ -22,6 +22,10 @@ public interface CommentsRepository extends JpaRepository<Comment,Long> {
             "ORDER BY c.createdAt DESC ")
     List<CommentDTO> getCommentLately(@Param("recipeId") Long recipeId);
 
+    // 전체 댓글 띄우기
+    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.replies WHERE c.recipe.recipeId = :recipeId AND c.parentComment IS NULL")
+    List<Comment> getCommentsByRecipeRecipeId(@Param("recipeId") Long recipeId);
+
 
 
 }

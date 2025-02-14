@@ -32,6 +32,34 @@ public class UserMapper {
         return dto;
     }
 
+    public static User toEntity(UserDTO dto) {
+        if (dto == null) return null;
+
+        User user = new User();
+        user.setUserId(dto.getUserId());
+        user.setUserPw(dto.getUserPw());
+        user.setEmail(dto.getEmail());
+        user.setHometown(dto.getHometown());
+        user.setCountry(dto.getCountry());
+        user.setProfilePic(dto.getProfilePic());
+        user.setRole(dto.getRole());
+
+        if (dto.getTastePreference() != null) {
+            List<TastePreference> tastePreferences = dto.getTastePreference().stream()
+                    .map(tpDTO -> {
+                        TastePreference tastePreference = new TastePreference();
+                        tastePreference.setTaste(tpDTO.getTaste());
+                        tastePreference.setSpicyLevel(tpDTO.getSpicyLevel());
+                        tastePreference.setUser(user);
+                        return tastePreference;
+                    })
+                    .collect(Collectors.toList());
+            user.setTastePreferences(tastePreferences);
+        }
+
+        return user;
+    }
+
     private static TastePreferenceDTO mapTastePreference(TastePreference tastePreference) {
         TastePreferenceDTO dto = new TastePreferenceDTO();
         dto.setTaste(tastePreference.getTaste());

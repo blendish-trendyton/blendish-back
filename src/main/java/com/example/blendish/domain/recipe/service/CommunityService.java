@@ -258,22 +258,23 @@ public class CommunityService {
         }
     }
 
-//    // 스크랩 삭제시
-//@Transactional
-//    public void removeScrap(Long recipeId){
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication != null && authentication.getPrincipal() instanceof User) {
-//            User user = (User) authentication.getPrincipal();
-//
-//            // Likes 삭제
-//            scrapRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
-//
-//            // 레시피의 likecount 감소
-//            recipeRepository.decrementScrapCount(recipeId);
-//        }
-//    }
+    // 스크랩 삭제시
+    @Transactional
+    public void removeScrap(Long recipeId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+            // 유저 객체
+            User user = userRepository.findByUserId(userDetails.getUsername());
+
+            // 스크랩 삭제
+            scrapRepository.deleteByRecipeRecipeIdAndUserId(recipeId,user.getId());
+
+            // 레시피의 스크랩 감소
+            recipeRepository.decrementScrapCount(recipeId);
+        }
+    }
 
     // 레시피 디테일 띄우기
     public RecipeDetailDTO getAllDetail(Long recipeId){

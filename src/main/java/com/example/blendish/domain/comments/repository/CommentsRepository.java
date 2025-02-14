@@ -3,6 +3,7 @@ package com.example.blendish.domain.comments.repository;
 import com.example.blendish.domain.comments.dto.CommentDTO;
 import com.example.blendish.domain.comments.entity.Comment;
 
+import org.hibernate.sql.Insert;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,6 +27,7 @@ public interface CommentsRepository extends JpaRepository<Comment,Long> {
     @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.replies WHERE c.recipe.recipeId = :recipeId AND c.parentComment IS NULL")
     List<Comment> getCommentsByRecipeRecipeId(@Param("recipeId") Long recipeId);
 
-
+    // 댓글 작성
+   // void InsertComment(@Param("recipeId") Long recipeId, @Param("parentCommentId") Long parentCommentId);
 
 }

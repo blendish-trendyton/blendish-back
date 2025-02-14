@@ -17,6 +17,9 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
     //롤값 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -71,7 +74,4 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    public User getUser() {
-        return user;
-    }
 }

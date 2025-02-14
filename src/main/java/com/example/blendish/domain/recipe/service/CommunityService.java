@@ -129,7 +129,8 @@ public class CommunityService {
                 .build();
 
     }
-    // 이미 좋아요햔 like 인지 찾기
+
+    // 이미 좋아요한 like 인지 찾기
     public boolean lsHaveLike(Long recipeId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -185,7 +186,7 @@ public class CommunityService {
 
 }
 
-//   좋아요 삭제시
+    //   좋아요 삭제시
     @Transactional
     public void removeLike(Long recipeId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -203,7 +204,35 @@ public class CommunityService {
         }
     }
 
-//   스크랩 등록시
+    //  이미 있는 스크랩인지 확인
+    @Transactional
+    public boolean isScrap(Long recipeId){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            User user = userRepository.findByUserId(userDetails.getUsername());
+
+
+            log.info(user.getEmail());
+
+
+            boolean isHave = scrapRepository.isScrap( user.getId(),recipeId);
+
+            log.info(String.valueOf(isHave));
+
+            return isHave;
+
+        } else {
+            log.warn("Authentication null or 인증오류");
+
+            return false;
+        }
+
+    }
+
+    //   스크랩 등록시
     @Transactional
     public void insertScrap(Long recipeId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

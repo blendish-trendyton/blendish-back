@@ -1,6 +1,7 @@
 package com.example.blendish.controller;
 
 import com.example.blendish.domain.recipe.dto.*;
+import com.example.blendish.domain.recipe.repository.ScrapRepository;
 import com.example.blendish.domain.recipe.service.CommunityService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.ErrorCode;
@@ -50,16 +51,16 @@ public class CommunityController {
     // 좋아요 클릭시
     @PostMapping("/updateLike")
     public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
-       // try {
+        try {
             if(communityService.lsHaveLike(recipeId)){
                 return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
             }
             communityService.insertLike(recipeId);
             return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null));
 
-        //} catch (Exception ex) {
-         //   return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
-       // }
+        } catch (Exception ex) {
+            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+        }
     }
 
 
@@ -81,10 +82,11 @@ public class CommunityController {
       // 스크랩 클릭시
     @PostMapping("/updateScrap")
     public ResponseEntity<ApiResponseTemplate<?>> updateScrap(@RequestBody Long recipeId) {
-
+        if(communityService.isScrap(recipeId)){
+            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+        }
         communityService.insertScrap(recipeId);
-
-        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null));
     }
 
     //레시피 전체 디테일

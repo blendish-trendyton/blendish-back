@@ -1,12 +1,13 @@
 package com.example.blendish.global.config;
 
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
 
 
 @Configuration
@@ -33,6 +34,6 @@ public class SwaggerConfig {
         return new Info()
                 .title("Blendish")
                 .description("나만의 레시피 만들기")
-                .version("1.0.0");
+                .version("1.0.0"); // API의 버전
     }
 }

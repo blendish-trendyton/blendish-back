@@ -22,7 +22,9 @@ public interface LikeRepository extends JpaRepository<Likes, Long> {
             "ORDER BY COUNT(l) DESC")
     List<LiketenRecipeDTO> findTopTenLikedRecipeIds(Pageable pageable);
 
+    @Query("SELECT COUNT(l) > 0 FROM Likes l WHERE l.user.id = :id AND l.recipe.recipeId = :recipeId")
+    boolean isLike(@Param("id") Long id, @Param("recipeId") Long recipeId);
 
-    boolean existsByUser_IdAndRecipe_RecipeId(@Param("userId") Long userId, @Param("recipeId")Long recipeId);
+
 
 }

@@ -1,22 +1,20 @@
 package com.example.blendish.domain.recipe.entity;
 
+import com.example.blendish.domain.comments.entity.Comment;
+import com.example.blendish.domain.foodflavor.entity.FoodFlavor;
 import com.example.blendish.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
-import org.springframework.data.relational.core.sql.In;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Setter
 public class Recipe {
 
     @Id
@@ -34,6 +32,13 @@ public class Recipe {
     private List<Ingredient> ingredients;
 
     private int likeCount;
+
+    @Column(nullable = false, length = 100)
+    private String time;
+
+    private int scrapCount;
+
+    private int spicyLevel;
 
     @Column(length = 200)
     private String information;
@@ -53,6 +58,18 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeSteps> steps;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comment ;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Likes> likes ;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Scrap> scraps ;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodFlavor> foodFlavors ;
 
     @PrePersist
     protected void onCreate() {

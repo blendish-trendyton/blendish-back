@@ -99,9 +99,9 @@ public class GPTRecipeService {
         - 조리 시간: [시간]분
         - 난이도: [쉬움/보통/어려움]
         - 특징: [레시피의 특징]
-        - 재료: [재료 목록]
+        - 재료: [재료 목록 및 계량]
         - 재료 팁: [%s에서 재료를 구할 수 있는 팁]
-        - 조리 순서 (6단계): 
+        - 조리 순서 (단계별로 설명): 
         """,
                 country, request.tastes(), request.difficulty(), request.cookingTime(), request.category(), request.spiceLevel(), country
         );

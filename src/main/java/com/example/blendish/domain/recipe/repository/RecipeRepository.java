@@ -37,5 +37,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("UPDATE Recipe r SET r.scrapCount = r.likeCount - 1 WHERE r.recipeId = :recipeId")
     void decrementScrapCount(@Param("recipeId") Long recipeId);
 
+    List<Recipe> findRecipeByNameContaining(String name);
+
+
+
 
 }

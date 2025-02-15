@@ -74,7 +74,7 @@ public class RecipeService {
                 .ingredients(ingredients)
                 .information(addRecipeDTO.information())
                 .foodImage(null)
-                .user(null)
+                .user(user)
                 .isAiGenerated(true)
                 .steps(steps)
                 .build();

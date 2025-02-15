@@ -3,7 +3,6 @@ package com.example.blendish.controller;
 import com.example.blendish.domain.comments.dto.CommentAllDTO;
 import com.example.blendish.domain.comments.dto.CommentDTO;
 import com.example.blendish.domain.comments.service.CommentService;
-import com.example.blendish.domain.recipe.dto.CommunityHotRecipeDTO;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.SuccessCode;
 import io.swagger.v3.oas.annotations.tags.Tag;

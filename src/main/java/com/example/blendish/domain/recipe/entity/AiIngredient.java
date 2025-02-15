@@ -22,6 +22,6 @@ public class AiIngredient {
     private String amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ai_recipe_id", nullable = false)
-    private AiRecipe aiRecipe;
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 }

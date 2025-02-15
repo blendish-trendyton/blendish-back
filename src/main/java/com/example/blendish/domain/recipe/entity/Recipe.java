@@ -70,6 +70,12 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FoodFlavor> foodFlavors;
 
+    @Column(nullable = false)
+    private boolean isAiGenerated;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AiIngredient> aiIngredients;
+
     @PrePersist
     protected void onCreate() {
         this.postDate = new Date();

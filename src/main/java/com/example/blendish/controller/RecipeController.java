@@ -27,7 +27,7 @@ public class RecipeController implements RecipeSwagger{
                                                                  @RequestPart(value = "image", required = false) MultipartFile image,
                                                                  @AuthenticationPrincipal UserDetails userDetails) throws IOException {
         String imageUrl = (image != null && !image.isEmpty()) ? s3UploadService.saveFile(image) : null;
-        recipeService.createRecipe(addRecipeDTO, userDetails.getUsername(), imageUrl);
+        recipeService.createUserRecipe(addRecipeDTO, userDetails.getUsername(), imageUrl);
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, "레시피가 등록되었습니다."));
     }
 }

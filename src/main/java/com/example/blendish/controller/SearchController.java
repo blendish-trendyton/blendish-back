@@ -1,5 +1,4 @@
 package com.example.blendish.controller;
-import com.example.blendish.domain.recipe.dto.SearchDTO;
 import com.example.blendish.domain.recipe.entity.Category;
 import com.example.blendish.domain.recipe.service.SearchService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
@@ -22,7 +21,7 @@ public class SearchController {
     private final SearchService searchService;
 
     // 카테고리 검색
-    @PostMapping
+    @GetMapping("/searchCategories")
     public ResponseEntity<ApiResponseTemplate<?>> searchCategories(@RequestParam(name = "name") String name) {
         List<Category> category= searchService.getCategoryByName(name);
 

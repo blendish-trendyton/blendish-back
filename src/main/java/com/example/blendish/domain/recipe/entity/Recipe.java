@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Setter
+@Table(name = "recipe")
 public class Recipe {
 
     @Id
@@ -27,8 +27,7 @@ public class Recipe {
     @Column(nullable = false, length = 1)
     private String level;
 
-    @ElementCollection
-    @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients;
 
     private int likeCount;
@@ -60,16 +59,22 @@ public class Recipe {
     private List<RecipeSteps> steps;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comment ;
+    private List<Comment> comment;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Likes> likes ;
+    private List<Likes> likes;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Scrap> scraps ;
+    private List<Scrap> scraps;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FoodFlavor> foodFlavors ;
+    private List<FoodFlavor> foodFlavors;
+
+    @Column(nullable = false)
+    private boolean isAiGenerated;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AiIngredient> aiIngredients;
 
     @PrePersist
     protected void onCreate() {
@@ -81,5 +86,4 @@ public class Recipe {
     protected void onUpdate() {
         this.updatedDate = new Date();
     }
-
 }

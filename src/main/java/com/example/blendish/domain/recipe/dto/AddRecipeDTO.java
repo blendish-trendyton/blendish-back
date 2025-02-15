@@ -8,6 +8,6 @@ public record AddRecipeDTO(String name,
                            String level,
                            List<Ingredient> ingredients,
                            String information,
-                           String foodImage,
+                           boolean isAiGenerated,
                            List<RecipeStepDTO> steps) {
 }

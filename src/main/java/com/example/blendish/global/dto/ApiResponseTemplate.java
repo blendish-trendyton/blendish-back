@@ -14,7 +14,9 @@ public class ApiResponseTemplate<T> {
 
     private final int status;
     private final String message;
+
     private final LocalDateTime timestamp;  // 추가된 날짜/시간 필드
+
     private T data;
 
     public static <T> ApiResponseTemplate<T> success(SuccessCode successCode, T data) {

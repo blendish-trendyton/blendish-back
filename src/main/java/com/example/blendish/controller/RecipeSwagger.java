@@ -2,7 +2,6 @@ package com.example.blendish.controller;
 
 import com.example.blendish.domain.recipe.dto.AddRecipeDTO;
 import com.example.blendish.global.dto.ApiResponseTemplate;
-import com.example.blendish.global.response.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

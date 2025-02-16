@@ -7,6 +7,7 @@ import com.example.blendish.domain.recipe.entity.Likes;
 import com.example.blendish.domain.recipe.entity.Recipe;
 import com.example.blendish.domain.recipe.entity.RecipeSteps;
 import com.example.blendish.domain.recipe.entity.Scrap;
+import com.example.blendish.domain.recipe.repository.AiIngredientRepository;
 import com.example.blendish.domain.recipe.repository.LikeRepository;
 import com.example.blendish.domain.recipe.repository.RecipeRepository;
 import com.example.blendish.domain.recipe.repository.ScrapRepository;
@@ -41,7 +42,7 @@ public class CommunityService {
     private final ScrapRepository scrapRepository;
     private final RecipestepsRepository recipestepsRepository;
     private final UserRepository userRepository;
-
+    private final AiIngredientRepository aiIngredientRepository;
     // 인기 레시피 가져오는 서비스
     public List<CommunityHotRecipeDTO> getTopLikedRecipes() {
 
@@ -126,6 +127,7 @@ public class CommunityService {
                 .information(recipe.getInformation())
                 .commentDTOList(latestComments)
                 .flavor(flavorList)
+                .isAiGenerated(recipe.isAiGenerated())
                 .build();
 
     }
@@ -301,6 +303,27 @@ public class CommunityService {
     public List<LiketenRecipeDTO> getTenRecipe(){
         Pageable pageable = PageRequest.of(0, 10);
         return likeRepository.findTopTenLikedRecipeIds(pageable);
+    }
+
+    //ai 레시피 디테일 띄우기
+    public RecipeDetailDTO getAllDetailByAi(Long recipeId){
+
+        Recipe recipe = recipeRepository.findByRecipeId(recipeId);
+        RecipeSteps recipeSteps =recipestepsRepository.findByRecipeRecipeId(recipeId);
+
+        RecipeStepsDTO recipeStepsDTO = new RecipeStepsDTO(recipeSteps.getDetails(),recipeSteps.getStepImage(),
+                recipeSteps.getStepNum());
+
+
+        return RecipeDetailDTO.builder()
+                .recipeId(recipeId)
+                .time(recipe.getTime())
+                .level(recipe.getLevel())
+                .name(recipe.getName())
+                .ingredients(recipe.getIngredients())
+                .recipeSteps(recipeStepsDTO)
+                .build();
+
     }
 
 

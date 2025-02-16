@@ -18,9 +18,10 @@ public class SearchService {
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
     private final CommentsRepository commentsRepository;
+
     // 레시피 검색결과
     public List<Category> getCategoryByName(String name){
-       return categoryRepository.findByNameContaining(name);
+        return categoryRepository.findByNameContaining(name);
     }
 
     // 해당카테고리에 있는 레시피들
@@ -34,9 +35,14 @@ public class SearchService {
                     .name(recipes.get(i).getName())
                     .information(recipes.get(i).getInformation())
                     .likeCount(recipes.get(i).getLikeCount())
+                    .isAiGenerated(recipes.get(i).isAiGenerated())
                     .commentCount(commentsRepository.countByRecipeRecipeId(recipes.get(i).getRecipeId())).build();
+
+            recipeLists.add(recipeList);
         }
+
 
         return  recipeLists;
     }
 }
+

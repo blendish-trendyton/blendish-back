@@ -14,4 +14,5 @@ public class RecipeListDTO {
     private int commentCount;
     private String name;
     private String information;
+    private boolean isAiGenerated;
 }

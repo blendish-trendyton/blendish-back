@@ -1,5 +1,7 @@
 package com.example.blendish.controller;
+import com.example.blendish.domain.recipe.dto.RecipeListDTO;
 import com.example.blendish.domain.recipe.entity.Category;
+import com.example.blendish.domain.recipe.service.RecipeService;
 import com.example.blendish.domain.recipe.service.SearchService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.SuccessCode;
@@ -28,6 +30,19 @@ public class SearchController {
         Map<String, Object> response = new HashMap<>();
         response.put("categories", category);
         response.put("totalCount", category.size());
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, response));
+    }
+
+
+    //카테고리에 해당하는 레시피들 띄우기
+    @GetMapping("/RecipesOfCategories")
+    public ResponseEntity<ApiResponseTemplate<?>> RecipesOfCategories(@RequestParam(name = "name") String name) {
+        List<RecipeListDTO> recipeListDTOS= searchService.getRecipeList(name);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("categories", recipeListDTOS);
+        response.put("totalCount", recipeListDTOS.size());
 
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, response));
     }

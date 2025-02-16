@@ -1,7 +1,6 @@
 package com.example.blendish.controller;
 
 import com.example.blendish.domain.recipe.dto.AddRecipeDTO;
-import com.example.blendish.domain.recipe.entity.Recipe;
 import com.example.blendish.domain.recipe.service.RecipeService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.SuccessCode;

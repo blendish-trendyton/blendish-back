@@ -6,6 +6,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +17,10 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         final String securitySchemeName = "bearerAuth";
+
+        Server server = new Server();
+        server.setUrl("https://junyeongan.store");
+        server.setDescription("Blendish Server");
 
         return new OpenAPI()
                 .components(new Components()
@@ -27,7 +33,8 @@ public class SwaggerConfig {
                         )
                 )
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
-                .info(apiInfo());
+                .info(apiInfo())
+                .servers(List.of(server));
     }
 
     private Info apiInfo() {

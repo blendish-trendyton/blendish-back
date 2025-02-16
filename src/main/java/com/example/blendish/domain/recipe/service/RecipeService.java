@@ -1,6 +1,7 @@
 package com.example.blendish.domain.recipe.service;
 
 import com.example.blendish.domain.recipe.dto.AddRecipeDTO;
+import com.example.blendish.domain.recipe.entity.AiRecipeSteps;
 import com.example.blendish.domain.recipe.entity.Ingredient;
 import com.example.blendish.domain.recipe.entity.Recipe;
 import com.example.blendish.domain.recipe.entity.RecipeSteps;
@@ -59,8 +60,8 @@ public class RecipeService {
             throw new IllegalArgumentException("유저를 찾을 수 없습니다.");
         }
 
-        List<RecipeSteps> steps = addRecipeDTO.steps().stream()
-                .map(stepDTO -> RecipeSteps.builder()
+        List<AiRecipeSteps> steps = addRecipeDTO.steps().stream()
+                .map(stepDTO -> AiRecipeSteps.builder()
                         .stepNum(stepDTO.stepNumber())
                         .details(stepDTO.details())
                         .build())
@@ -76,7 +77,7 @@ public class RecipeService {
                 .foodImage(null)
                 .user(user)
                 .isAiGenerated(true)
-                .steps(steps)
+                .aiSteps(steps)
                 .build();
 
         steps.forEach(step -> step.updateRecipe(recipe));

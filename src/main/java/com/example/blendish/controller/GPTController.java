@@ -3,7 +3,7 @@ package com.example.blendish.controller;
 import com.example.blendish.domain.gpt.dto.CustomRecipeReqDTO;
 import com.example.blendish.domain.gpt.service.GPTRecipeService;
 import com.example.blendish.domain.gpt.service.OpenAIService;
-import com.example.blendish.domain.recipe.dto.AddRecipeDTO;
+import com.example.blendish.domain.recipe.dto.AddAiRecipeDTO;
 import com.example.blendish.domain.recipe.service.RecipeService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.SuccessCode;
@@ -40,7 +40,7 @@ public class GPTController implements GPTSwagger{
     }
 
     @PostMapping("/recipe/save")
-    public ResponseEntity<ApiResponseTemplate<String>> saveRecipe(@RequestBody AddRecipeDTO addRecipeDTO,@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponseTemplate<String>> saveRecipe(@RequestBody AddAiRecipeDTO addRecipeDTO, @AuthenticationPrincipal UserDetails userDetails) {
         recipeService.createAiRecipe(addRecipeDTO, userDetails.getUsername());
 
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.CREATED, "레시피가 등록되었습니다."));

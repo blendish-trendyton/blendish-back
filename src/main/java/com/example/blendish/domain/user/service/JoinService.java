@@ -67,6 +67,7 @@ public class JoinService {
                     TastePreference tastePreference = new TastePreference();
                     tastePreference.setUser(user);
                     tastePreference.setTaste(tasteDTO.getTaste());
+                    tastePreference.setSpicyLevel(tasteDTO.getSpicyLevel());
                     return tastePreference;
                 })
                 .collect(Collectors.toList());

@@ -3,14 +3,8 @@ package com.example.blendish.domain.recipe.service;
 import com.example.blendish.domain.comments.dto.CommentDTO;
 import com.example.blendish.domain.comments.repository.CommentsRepository;
 import com.example.blendish.domain.recipe.dto.*;
-import com.example.blendish.domain.recipe.entity.Likes;
-import com.example.blendish.domain.recipe.entity.Recipe;
-import com.example.blendish.domain.recipe.entity.RecipeSteps;
-import com.example.blendish.domain.recipe.entity.Scrap;
-import com.example.blendish.domain.recipe.repository.AiIngredientRepository;
-import com.example.blendish.domain.recipe.repository.LikeRepository;
-import com.example.blendish.domain.recipe.repository.RecipeRepository;
-import com.example.blendish.domain.recipe.repository.ScrapRepository;
+import com.example.blendish.domain.recipe.entity.*;
+import com.example.blendish.domain.recipe.repository.*;
 import com.example.blendish.domain.recipesteps.dto.RecipeStepsDTO;
 import com.example.blendish.domain.recipesteps.repository.RecipestepsRepository;
 import com.example.blendish.domain.user.dto.CustomUserDetails;
@@ -19,6 +13,7 @@ import com.example.blendish.domain.user.repository.UserRepository;
 import io.jsonwebtoken.lang.Collections;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +38,8 @@ public class CommunityService {
     private final RecipestepsRepository recipestepsRepository;
     private final UserRepository userRepository;
     private final AiIngredientRepository aiIngredientRepository;
+    private final AiRecipeStepsRepository aiRecipeStepsRepository;
+    private final  IngredientRepository ingredientRepository;
     // 인기 레시피 가져오는 서비스
     public List<CommunityHotRecipeDTO> getTopLikedRecipes() {
 
@@ -281,20 +278,36 @@ public class CommunityService {
     // 레시피 디테일 띄우기
     public RecipeDetailDTO getAllDetail(Long recipeId){
 
+        // 레시피 객체 가져오기
         Recipe recipe = recipeRepository.findByRecipeId(recipeId);
-        RecipeSteps recipeSteps =recipestepsRepository.findByRecipeRecipeId(recipeId);
 
-        RecipeStepsDTO recipeStepsDTO = new RecipeStepsDTO(recipeSteps.getDetails(),recipeSteps.getStepImage(),
-                recipeSteps.getStepNum());
+        //레시피 단계 가져오기
+        List<RecipeSteps> recipeSteps =recipestepsRepository.findByRecipeRecipeId(recipeId);
+        List<RecipeStepsDTO> aiRecipeStepDTOS = new ArrayList<>();
 
+        for(int i=0; i<recipeSteps.size(); i++){
+            RecipeStepsDTO recipeStepsDTO = new RecipeStepsDTO(recipeSteps.get(i).getDetails(),recipeSteps.get(i).getStepImage(),
+                    recipeSteps.get(i).getStepNum());
+            aiRecipeStepDTOS.add(recipeStepsDTO);
+        }
+
+        // 레시피 재료 가져오기
+        List<Ingredient> Ingredients = ingredientRepository.findByRecipeRecipeId(recipeId);
+        List<RecipeIngredientsDTO> ingredientsDTOS = new ArrayList<>();
+
+        for(int i=0; i<Ingredients.size(); i++){
+            RecipeIngredientsDTO recipeIngredientsDTO = new RecipeIngredientsDTO(Ingredients.get(i).getAmount(),
+                    Ingredients.get(i).getAmount());
+            ingredientsDTOS.add(recipeIngredientsDTO);
+        }
 
         return RecipeDetailDTO.builder()
                 .recipeId(recipeId)
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .name(recipe.getName())
-                .ingredients(recipe.getIngredients())
-                .recipeSteps(recipeStepsDTO)
+                .ingredients(ingredientsDTOS)
+                .recipeSteps(aiRecipeStepDTOS)
                 .build();
 
     }
@@ -306,22 +319,38 @@ public class CommunityService {
     }
 
     //ai 레시피 디테일 띄우기
-    public RecipeDetailDTO getAllDetailByAi(Long recipeId){
+    public AiRecipeDetailDTO getAllDetailByAi(Long recipeId){
 
+        // 레시피 객체 찾기
         Recipe recipe = recipeRepository.findByRecipeId(recipeId);
-        RecipeSteps recipeSteps =recipestepsRepository.findByRecipeRecipeId(recipeId);
+        // 레시피 단계 가져오기
+        List<AiRecipeSteps> recipeSteps =aiRecipeStepsRepository.findByRecipeRecipeId(recipeId);
+        List<AIRecipeStepDTO> aiRecipeStepDTOS = new ArrayList<>();
 
-        RecipeStepsDTO recipeStepsDTO = new RecipeStepsDTO(recipeSteps.getDetails(),recipeSteps.getStepImage(),
-                recipeSteps.getStepNum());
+        for(int i=0; i<recipeSteps.size(); i++){
+            AIRecipeStepDTO aiRecipeStepDTO = new AIRecipeStepDTO(recipeSteps.get(i).getDetails(),
+                    recipeSteps.get(i).getStepNum());
+            aiRecipeStepDTOS.add(aiRecipeStepDTO);
+        }
+
+        // 레시피 재료 가져오기
+        List<AiIngredient> aiIngredients = aiIngredientRepository.findByRecipeRecipeId(recipeId);
+        List<AiIngredientDTO> aiIngredientDTOS = new ArrayList<>();
+
+        for(int i=0; i<aiIngredients.size(); i++){
+            AiIngredientDTO aiRecipeStepDTO = new AiIngredientDTO(aiIngredients.get(i).getAmount(),
+                    aiIngredients.get(i).getAmount());
+            aiIngredientDTOS.add(aiRecipeStepDTO);
+        }
 
 
-        return RecipeDetailDTO.builder()
+        return AiRecipeDetailDTO.builder()
                 .recipeId(recipeId)
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .name(recipe.getName())
-                .ingredients(recipe.getIngredients())
-                .recipeSteps(recipeStepsDTO)
+                .ingredients(aiIngredientDTOS)
+                .recipeSteps(aiRecipeStepDTOS)
                 .build();
 
     }

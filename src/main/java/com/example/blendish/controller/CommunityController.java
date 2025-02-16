@@ -124,5 +124,12 @@ public class CommunityController {
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, likeTenRecipeDTO));
     }
 
+    // ai 레시피 디테일
+    @GetMapping("/getAiRecipeDetail")
+    public ResponseEntity<ApiResponseTemplate<AiRecipeDetailDTO>> getAllDetailByAi(@RequestParam(name = "recipeId") Long recipeId){
+        AiRecipeDetailDTO recipeDetailDTO = communityService.getAllDetailByAi(recipeId);
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, recipeDetailDTO));
+    }
 
 }

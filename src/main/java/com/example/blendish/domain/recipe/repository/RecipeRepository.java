@@ -40,6 +40,4 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findRecipeByNameContaining(String name);
 
 
-
-
 }

@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RecipestepsRepository extends JpaRepository<RecipeSteps,Long> {
-    RecipeSteps findByRecipeRecipeId(Long recipeId);
+    List<RecipeSteps> findByRecipeRecipeId(Long recipeId);
 
 
 }

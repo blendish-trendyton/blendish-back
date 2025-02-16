@@ -40,7 +40,7 @@ public class GPTController implements GPTSwagger{
     }
 
     @PostMapping("/recipe/save")
-    public ResponseEntity<ApiResponseTemplate<String>> saveRecipe(@RequestBody AddRecipeDTO addRecipeDTO, UserDetails userDetails) {
+    public ResponseEntity<ApiResponseTemplate<String>> saveRecipe(@RequestBody AddRecipeDTO addRecipeDTO,@AuthenticationPrincipal UserDetails userDetails) {
         recipeService.createAiRecipe(addRecipeDTO, userDetails.getUsername());
 
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.CREATED, "레시피가 등록되었습니다."));

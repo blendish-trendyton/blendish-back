@@ -1,7 +1,7 @@
 package com.example.blendish.controller;
 
 import com.example.blendish.domain.gpt.dto.CustomRecipeReqDTO;
-import com.example.blendish.domain.recipe.dto.AddRecipeDTO;
+import com.example.blendish.domain.recipe.dto.AddAiRecipeDTO;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +24,7 @@ public interface GPTSwagger {
 
     @Operation(summary = "AI 레시피 저장", description = "AI가 생성한 레시피를 데이터베이스에 저장합니다.")
     ResponseEntity<ApiResponseTemplate<String>> saveRecipe(
-            @RequestBody AddRecipeDTO addRecipeDTO,
+            @RequestBody AddAiRecipeDTO addRecipeDTO,
             UserDetails userDetails
     );
 }

@@ -1,6 +1,6 @@
 package com.example.blendish.controller;
 
-import com.example.blendish.domain.recipe.dto.AddRecipeDTO;
+import com.example.blendish.domain.recipe.dto.AddUserRecipeDTO;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +30,7 @@ public interface RecipeSwagger {
             }
     )
     @PostMapping("/api/recipe")
-    ResponseEntity<ApiResponseTemplate<String>> addRecipe(@RequestBody AddRecipeDTO addRecipeDTO,
+    ResponseEntity<ApiResponseTemplate<String>> addRecipe(@RequestBody AddUserRecipeDTO addRecipeDTO,
                                                           @RequestPart(value = "image", required = false) MultipartFile image,
                                                           @AuthenticationPrincipal UserDetails userDetails) throws IOException;
 }

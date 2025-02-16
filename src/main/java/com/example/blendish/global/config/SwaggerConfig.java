@@ -1,6 +1,5 @@
 package com.example.blendish.global.config;
 
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -11,16 +10,19 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         final String securitySchemeName = "bearerAuth";
 
-        Server server = new Server();
-        server.setUrl("https://junyeongan.store");
-        server.setDescription("Blendish Server");
+        Server productionServer = new Server()
+                .url("https://junyeongan.store")
+                .description("Blendish Production Server");
+
+        Server localServer = new Server()
+                .url("http://localhost:8080")
+                .description("Blendish Local Server");
 
         return new OpenAPI()
                 .components(new Components()
@@ -34,7 +36,7 @@ public class SwaggerConfig {
                 )
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .info(apiInfo())
-                .servers(List.of(server));
+                .servers(List.of(productionServer, localServer));
     }
 
     private Info apiInfo() {

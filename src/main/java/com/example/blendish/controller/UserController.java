@@ -2,6 +2,7 @@ package com.example.blendish.controller;
 
 import com.example.blendish.domain.user.dto.UserDTO;
 import com.example.blendish.domain.user.dto.check.CheckUserPwDTO;
+import com.example.blendish.domain.user.dto.preference.UserDetailDTO;
 import com.example.blendish.domain.user.service.UserService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.SuccessCode;
@@ -71,12 +72,12 @@ public class UserController {
             description = "토큰에 포함된 사용자 ID를 기반으로 전체 사용자 데이터를 반환한다."
     )
     @GetMapping("/me")
-    public ResponseEntity<ApiResponseTemplate<UserDTO>> getUserById() {
+    public ResponseEntity<ApiResponseTemplate<UserDetailDTO>> getUserById() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
         System.out.println(userId);
-        UserDTO userDTO = userService.getUserById(userId);
-        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, userDTO));
+        UserDetailDTO userDetail = userService.getUserDetail(userId);
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, userDetail));
     }
 
 }

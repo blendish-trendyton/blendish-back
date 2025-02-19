@@ -1,6 +1,7 @@
 package com.example.blendish.controller;
 
 import com.example.blendish.domain.gpt.dto.CustomRecipeReqDTO;
+import com.example.blendish.domain.gpt.dto.CustomRecipeResDTO;
 import com.example.blendish.domain.gpt.service.GPTRecipeService;
 import com.example.blendish.domain.gpt.service.OpenAIService;
 import com.example.blendish.domain.recipe.dto.AddAiRecipeDTO;
@@ -30,13 +31,13 @@ public class GPTController implements GPTSwagger{
     }
 
     @PostMapping("/recipe")
-    public ResponseEntity<ApiResponseTemplate<String>> generateCustomRecipe(
+    public ResponseEntity<ApiResponseTemplate<CustomRecipeResDTO>> generateCustomRecipe(
             @RequestBody CustomRecipeReqDTO request,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        String result = gptRecipeService.getAiGeneratedRecipe(request, userDetails);
+        CustomRecipeResDTO customRecipeResDTO = gptRecipeService.getAiGeneratedRecipe(request, userDetails.getUsername());
 
-        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.CREATED, result));
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.CREATED, customRecipeResDTO));
     }
 
     @PostMapping("/recipe/save")

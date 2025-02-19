@@ -1,6 +1,7 @@
 package com.example.blendish.domain.gpt.service;
 
 import com.example.blendish.domain.gpt.dto.CustomRecipeReqDTO;
+import com.example.blendish.domain.gpt.dto.CustomRecipeResDTO;
 import com.example.blendish.domain.user.entity.User;
 import com.example.blendish.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,8 +32,7 @@ public class GPTRecipeService {
     @Value("${openai.api.key}")
     private String openAiApiKey;
 
-    public String getAiGeneratedRecipe(CustomRecipeReqDTO request, @AuthenticationPrincipal UserDetails userDetails) {
-        String userId = userDetails.getUsername();
+    public CustomRecipeResDTO getAiGeneratedRecipe(CustomRecipeReqDTO request, String userId) {
         User user = userRepository.findByUserId(userId);
 
         if (user == null) {
@@ -49,13 +49,6 @@ public class GPTRecipeService {
                 ),
                 "temperature", 0.7
         );
-
-        try {
-            String requestJson = objectMapper.writeValueAsString(requestBody);
-            logger.info("Sending request to OpenAI: {}", requestJson);
-        } catch (Exception e) {
-            logger.error("Error converting request to JSON", e);
-        }
 
         String url = "https://api.openai.com/v1/chat/completions";
 
@@ -76,19 +69,20 @@ public class GPTRecipeService {
                 if (!choices.isEmpty()) {
                     Map<String, Object> firstChoice = choices.get(0);
                     Map<String, String> message = (Map<String, String>) firstChoice.get("message");
-                    return message.getOrDefault("content", "레시피를 생성하는 데 실패했습니다.");
+                    String recipeContent = message.getOrDefault("content", "레시피를 생성하는 데 실패했습니다.");
+
+                    return new CustomRecipeResDTO(request, recipeContent);
                 }
             }
-            return "레시피를 생성하는 데 실패했습니다.";
-
         } catch (HttpClientErrorException e) {
             logger.error("OpenAI API Error: StatusCode = {}, ResponseBody = {}", e.getStatusCode(), e.getResponseBodyAsString());
-            return "OpenAI API 요청 중 오류가 발생했습니다.";
         } catch (Exception e) {
             logger.error("Unexpected error calling OpenAI API", e);
-            return "레시피를 생성하는 중 오류가 발생했습니다.";
         }
+
+        return new CustomRecipeResDTO(request, "레시피를 생성하는 중 오류가 발생했습니다.");
     }
+
 
     private String generateRecipePrompt(CustomRecipeReqDTO request, String country) {
         return String.format("""
@@ -98,7 +92,7 @@ public class GPTRecipeService {
         1. [레시피 이름]
         - 조리 시간: [시간]분
         - 난이도: [쉬움/보통/어려움]
-        - 특징: [레시피의 특징]
+        - 요약: [레시피의 요약]
         - 재료: [재료 목록 및 계량]
         - 재료 팁: [%s에서 재료를 구할 수 있는 팁]
         - 조리 순서 (단계별로 설명): 

@@ -1,6 +1,7 @@
 package com.example.blendish.controller;
 
 import com.example.blendish.domain.gpt.dto.CustomRecipeReqDTO;
+import com.example.blendish.domain.gpt.dto.CustomRecipeResDTO;
 import com.example.blendish.domain.recipe.dto.AddAiRecipeDTO;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +18,7 @@ public interface GPTSwagger {
     ResponseEntity<ApiResponseTemplate> chatWithGpt(@RequestParam String message);
 
     @Operation(summary = "사용자 맞춤 GPT 레시피 생성", description = "사용자 입력을 기반으로 GPT가 맞춤형 레시피를 생성합니다.")
-    ResponseEntity<ApiResponseTemplate<String>> generateCustomRecipe(
+    ResponseEntity<ApiResponseTemplate<CustomRecipeResDTO>> generateCustomRecipe(
             @RequestBody CustomRecipeReqDTO request,
             UserDetails userDetails
     );

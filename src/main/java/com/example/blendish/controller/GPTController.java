@@ -1,9 +1,10 @@
 package com.example.blendish.controller;
 
 import com.example.blendish.domain.gpt.dto.CustomRecipeReqDTO;
+import com.example.blendish.domain.gpt.dto.CustomRecipeResDTO;
 import com.example.blendish.domain.gpt.service.GPTRecipeService;
 import com.example.blendish.domain.gpt.service.OpenAIService;
-import com.example.blendish.domain.recipe.dto.AddRecipeDTO;
+import com.example.blendish.domain.recipe.dto.AddAiRecipeDTO;
 import com.example.blendish.domain.recipe.service.RecipeService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.response.SuccessCode;
@@ -30,17 +31,17 @@ public class GPTController implements GPTSwagger{
     }
 
     @PostMapping("/recipe")
-    public ResponseEntity<ApiResponseTemplate<String>> generateCustomRecipe(
+    public ResponseEntity<ApiResponseTemplate<CustomRecipeResDTO>> generateCustomRecipe(
             @RequestBody CustomRecipeReqDTO request,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        String result = gptRecipeService.getAiGeneratedRecipe(request, userDetails);
+        CustomRecipeResDTO customRecipeResDTO = gptRecipeService.getAiGeneratedRecipe(request, userDetails.getUsername());
 
-        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.CREATED, result));
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.CREATED, customRecipeResDTO));
     }
 
     @PostMapping("/recipe/save")
-    public ResponseEntity<ApiResponseTemplate<String>> saveRecipe(AddRecipeDTO addRecipeDTO, UserDetails userDetails) {
+    public ResponseEntity<ApiResponseTemplate<String>> saveRecipe(@RequestBody AddAiRecipeDTO addRecipeDTO, @AuthenticationPrincipal UserDetails userDetails) {
         recipeService.createAiRecipe(addRecipeDTO, userDetails.getUsername());
 
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.CREATED, "레시피가 등록되었습니다."));

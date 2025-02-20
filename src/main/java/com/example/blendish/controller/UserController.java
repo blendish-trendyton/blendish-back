@@ -105,4 +105,15 @@ public class UserController {
         List<RecipeSummaryDTO> savedRecipes = userService.getAllSavedRecipes(userId);
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, savedRecipes));
     }
+    @Operation(
+            summary = "현재 로그인한 사용자 기본 정보 조회",
+            description = "현재 로그인한 사용자의 기본 정보를 반환한다. (레시피 정보 제외)"
+    )
+    @GetMapping("/me/details")
+    public ResponseEntity<ApiResponseTemplate<UserDTO>> getUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        UserDTO userDTO = userService.getUserById(userId);
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, userDTO));
+    }
 }

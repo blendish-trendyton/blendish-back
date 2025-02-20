@@ -150,4 +150,11 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public UserDTO getUserById(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
+        }
+        return UserMapper.toDTO(user);
+    }
 }

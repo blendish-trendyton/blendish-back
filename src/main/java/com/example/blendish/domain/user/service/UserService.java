@@ -83,7 +83,6 @@ public class UserService {
             throw new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
         }
 
-        // 사용자가 직접 등록한 레시피 목록 (최대 4개)
         List<RecipeSummaryDTO> myRecipes = recipeRepository.findByUser(user)
                 .stream()
                 .limit(4)
@@ -94,7 +93,6 @@ public class UserService {
                         .build())
                 .collect(Collectors.toList());
 
-        // 사용자가 스크랩한(저장한) 레시피 목록 (최대 4개)
         List<RecipeSummaryDTO> savedRecipes = scrapRepository.findByUser(user)
                 .stream()
                 .limit(4)
@@ -117,6 +115,39 @@ public class UserService {
                 .myRecipes(myRecipes)
                 .savedRecipes(savedRecipes)
                 .build();
+    }
+
+    public List<RecipeSummaryDTO> getAllMyRecipes(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
+        }
+        return recipeRepository.findByUser(user)
+                .stream()
+                .map(recipe -> RecipeSummaryDTO.builder()
+                        .recipeId(recipe.getRecipeId())
+                        .foodImage(recipe.getFoodImage())
+                        .name(recipe.getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<RecipeSummaryDTO> getAllSavedRecipes(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
+        }
+        return scrapRepository.findByUser(user)
+                .stream()
+                .map(scrap -> {
+                    Recipe recipe = scrap.getRecipe();
+                    return RecipeSummaryDTO.builder()
+                            .recipeId(recipe.getRecipeId())
+                            .foodImage(recipe.getFoodImage())
+                            .name(recipe.getName())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
 }

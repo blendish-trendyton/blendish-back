@@ -29,4 +29,5 @@ public class CommunityDetailDTO {
     private String information;
     private List<CommentDTO> commentDTOList;
     private List<String> flavor;
+    private boolean isAiGenerated;
 }

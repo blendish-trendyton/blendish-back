@@ -76,9 +76,12 @@ public class SecurityConfig {
                 );
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/login", "/", "/join/**","/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**","/profile",
+                                "/oauth2/**").permitAll()
                         .anyRequest().authenticated());
-
 
 
         //AuthenticationManager()와 JWTUtil 인수 전달

@@ -1,17 +1,18 @@
 package com.example.blendish.controller;
 
-import com.example.blendish.domain.recipe.dto.CommunityDetailDTO;
-import com.example.blendish.domain.recipe.dto.CommunityHotRecipeDTO;
-import com.example.blendish.domain.recipe.dto.CommunityTodayRecipeDTO;
-import com.example.blendish.domain.recipe.dto.RecipeDetailDTO;
+import com.example.blendish.domain.recipe.dto.*;
+import com.example.blendish.domain.recipe.repository.ScrapRepository;
 import com.example.blendish.domain.recipe.service.CommunityService;
 import com.example.blendish.global.dto.ApiResponseTemplate;
+import com.example.blendish.global.response.ErrorCode;
 import com.example.blendish.global.response.SuccessCode;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Printable;
 import java.util.List;
 
 @Tag(name = "Community Controller", description = "커뮤니티 관련 API")
@@ -48,31 +49,62 @@ public class CommunityController {
     }
 
     // 좋아요 클릭시
-//    @PostMapping("/updateLike")
-//    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
-//
-//        communityService.insertLike(recipeId);
-//
-//        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
-//    }
-//
-//    // 좋아요 삭제시
-//    @PostMapping("/deleteLike")
-//    public ResponseEntity<ApiResponseTemplate<?>> deleteLike(@RequestBody Long recipeId) {
-//
-//        communityService.removeLike(recipeId);
-//
-//        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
-//    }
-//
-//    // 스크랩 클릭시
-//    @PostMapping("/updateScrap")
-//    public ResponseEntity<ApiResponseTemplate<?>> updatScrap(@RequestBody Long recipeId) {
-//
-//        communityService.insertScrap(recipeId);
-//
-//        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
-//    }
+    @PostMapping("/updateLike")
+    public ResponseEntity<ApiResponseTemplate<?>> updateLike(@RequestBody Long recipeId) {
+        try {
+            if(communityService.lsHaveLike(recipeId)){
+                return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+            }
+            communityService.insertLike(recipeId);
+            return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null));
+
+        } catch (Exception ex) {
+            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+
+   // 좋아요 삭제시
+    @PostMapping("/deleteLike")
+    public ResponseEntity<ApiResponseTemplate<?>> deleteLike(@RequestBody Long recipeId) {
+        try {
+            communityService.removeLike(recipeId);
+
+            return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null ));
+
+        } catch (Exception ex) {
+            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+        }
+
+    }
+
+    // 스크랩 클릭시
+    @PostMapping("/updateScrap")
+    public ResponseEntity<ApiResponseTemplate<?>> updateScrap(@RequestBody Long recipeId) {
+        try {
+        if(communityService.isScrap(recipeId)){
+            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+        }
+        communityService.insertScrap(recipeId);
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null));
+
+        } catch (Exception ex) {
+            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    // 스크랩 삭제시
+    @PostMapping("/deleteScrap")
+    public ResponseEntity<ApiResponseTemplate<?>> deleteScrap(@RequestBody Long recipeId) {
+        try {
+            communityService.removeScrap(recipeId);
+            return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, null));
+
+        } catch (Exception ex) {
+            return  ResponseEntity.ok(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
+        }
+    }
+
 
     //레시피 전체 디테일
     @GetMapping("/AllDetailRecipe")
@@ -83,7 +115,21 @@ public class CommunityController {
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, recipeDetailDTO));
     }
 
+    // 상위 10 개 레시피
+    @GetMapping("/getTenhigher")
+    public ResponseEntity<ApiResponseTemplate<List<LiketenRecipeDTO>>> getTenHigher(){
 
+        List<LiketenRecipeDTO> likeTenRecipeDTO = communityService.getTenRecipe();
 
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, likeTenRecipeDTO));
+    }
+
+    // ai 레시피 디테일
+    @GetMapping("/getAiRecipeDetail")
+    public ResponseEntity<ApiResponseTemplate<AiRecipeDetailDTO>> getAllDetailByAi(@RequestParam(name = "recipeId") Long recipeId){
+        AiRecipeDetailDTO recipeDetailDTO = communityService.getAllDetailByAi(recipeId);
+
+        return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, recipeDetailDTO));
+    }
 
 }

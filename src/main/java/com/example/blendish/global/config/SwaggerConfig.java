@@ -16,9 +16,13 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         final String securitySchemeName = "bearerAuth";
 
-        Server server = new Server();
-        server.setUrl("https://junyeongan.store");
-        server.setDescription("Blendish Server");
+        Server productionServer = new Server()
+                .url("https://junyeongan.store")
+                .description("Blendish Production Server");
+
+        Server localServer = new Server()
+                .url("http://localhost:8080")
+                .description("Blendish Local Server");
 
         return new OpenAPI()
                 .components(new Components()
@@ -32,13 +36,13 @@ public class SwaggerConfig {
                 )
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .info(apiInfo())
-                .servers(List.of(server));
+                .servers(List.of(productionServer, localServer));
     }
 
     private Info apiInfo() {
         return new Info()
                 .title("Blendish")
                 .description("나만의 레시피 만들기")
-                .version("1.0.0");
+                .version("1.0.0"); // API의 버전
     }
 }

@@ -19,6 +19,7 @@ public class UserMapper {
         dto.setHometown(user.getHometown());
         dto.setCountry(user.getCountry());
         dto.setProfilePic(user.getProfilePic());
+        dto.setRole(user.getRole());
 
         List<TastePreferenceDTO> tastePreferenceDTOList = null;
         if (user.getTastePreferences() != null) {

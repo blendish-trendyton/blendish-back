@@ -4,7 +4,7 @@ import java.util.List;
 
 public record CustomRecipeReqDTO(
         String category,
-        int cookingTime,
+        String cookingTime,
         String difficulty,
         List<String> tastes,
         int spiceLevel

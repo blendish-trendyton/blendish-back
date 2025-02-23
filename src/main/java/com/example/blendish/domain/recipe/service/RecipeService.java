@@ -6,14 +6,15 @@ import com.example.blendish.domain.recipe.entity.*;
 import com.example.blendish.domain.recipe.repository.RecipeRepository;
 import com.example.blendish.domain.user.entity.User;
 import com.example.blendish.domain.user.repository.UserRepository;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -21,9 +22,22 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
+    private final RecipeImageService recipeImageService;
+    private final RecipeMapper recipeMapper;
+    private final ObjectMapper objectMapper;
 
     @Transactional
-    public void createUserRecipe(AddUserRecipeDTO addRecipeDTO, String userId, String imageUrl) {
+    public void createUserRecipe(String addRecipeDTOJson, String userId, MultipartFile image, List<MultipartFile> stepImages) throws IOException {
+        AddUserRecipeDTO addRecipeDTO = objectMapper.readValue(addRecipeDTOJson, AddUserRecipeDTO.class);
+
+        String imageUrl = recipeImageService.uploadImage(image);
+        List<String> stepImageUrls = recipeImageService.uploadStepImages(stepImages);
+
+        saveRecipe(addRecipeDTO, userId, imageUrl, stepImageUrls);
+    }
+
+    @Transactional
+    protected void saveRecipe(AddUserRecipeDTO addRecipeDTO, String userId, String imageUrl, List<String> stepImageUrls) {
         User user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new IllegalArgumentException("유저를 찾을 수 없습니다.");
@@ -43,28 +57,14 @@ public class RecipeService {
 
         recipeRepository.save(recipe);
 
-        List<RecipeSteps> steps = addRecipeDTO.steps().stream()
-                .map(stepDTO -> RecipeSteps.builder()
-                        .stepNum(stepDTO.stepNumber())
-                        .details(stepDTO.details())
-                        .recipe(recipe)
-                        .build())
-                .collect(Collectors.toList());
-
-        List<Ingredient> ingredients = addRecipeDTO.ingredients().stream()
-                .map(ingredient -> Ingredient.builder()
-                        .name(ingredient.getName())
-                        .amount(ingredient.getAmount())
-                        .recipe(recipe)
-                        .build())
-                .toList();
+        List<RecipeSteps> steps = recipeMapper.mapToRecipeSteps(addRecipeDTO.steps(), stepImageUrls, recipe);
+        List<Ingredient> ingredients = recipeMapper.mapToIngredients(addRecipeDTO.ingredients(), recipe);
 
         recipe.getSteps().addAll(steps);
         recipe.getIngredients().addAll(ingredients);
 
         recipeRepository.save(recipe);
     }
-
 
     @Transactional
     public void createAiRecipe(AddAiRecipeDTO addRecipeDTO, String userId) {
@@ -99,3 +99,4 @@ public class RecipeService {
         recipeRepository.save(recipe);
     }
 }
+

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,8 +35,10 @@ public interface RecipeSwagger {
             @Parameter(description = "레시피 정보(JSON)", schema = @Schema(implementation = String.class))
             @RequestParam("addRecipeDTO") String addRecipeDTOJson,
 
-            @Parameter(description = "레시피 이미지", content = @Content(mediaType = "image/*"))
+            @Parameter(description = "레시피 대표 이미지", content = @Content(mediaType = "image/*"))
             @RequestPart(value = "image", required = false) MultipartFile image,
+
+            @RequestPart(value = "stepImages", required = false) List<MultipartFile> stepImages,
 
             @Parameter(hidden = true)
             @AuthenticationPrincipal UserDetails userDetails

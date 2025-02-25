@@ -6,8 +6,11 @@ import com.example.blendish.domain.recipe.repository.RecipeRepository;
 import com.example.blendish.domain.recipe.repository.ScrapRepository;
 import com.example.blendish.domain.user.config.UserMapper;
 import com.example.blendish.domain.user.dto.UserDTO;
+import com.example.blendish.domain.user.dto.preference.TastePreferenceDTO;
 import com.example.blendish.domain.user.dto.preference.UserDetailDTO;
+import com.example.blendish.domain.user.entity.TastePreference;
 import com.example.blendish.domain.user.entity.User;
+import com.example.blendish.domain.user.repository.TastePreferenceRepository;
 import com.example.blendish.domain.user.repository.UserRepository;
 import com.example.blendish.global.dto.ApiResponseTemplate;
 import com.example.blendish.global.s3.S3UploadService;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +32,15 @@ public class UserService {
     private final RecipeRepository recipeRepository;
     private final ScrapRepository scrapRepository;
     private final S3UploadService s3UploadService;
+    private final TastePreferenceRepository tastePreferenceRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository, RecipeRepository recipeRepository, ScrapRepository scrapRepository, S3UploadService s3UploadService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository userRepository, RecipeRepository recipeRepository, ScrapRepository scrapRepository, S3UploadService s3UploadService, TastePreferenceRepository tastePreferenceRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
         this.scrapRepository = scrapRepository;
         this.s3UploadService = s3UploadService;
+        this.tastePreferenceRepository = tastePreferenceRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -44,14 +50,8 @@ public class UserService {
                 .map(UserMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
-    public UserDTO updateUser(UserDTO userDTO, MultipartFile profilePic) throws IOException {
-
-        if (profilePic != null && !profilePic.isEmpty()) {
-            String uploadedUrl = s3UploadService.saveFile(profilePic);
-            userDTO.setProfilePic(uploadedUrl);
-        }
-
+    @Transactional
+    public UserDTO updateUser(UserDTO userDTO) {
         userDTO.setRole("ROLE_ADMIN");
 
         if (userDTO.getUserPw() != null && !userDTO.getUserPw().isEmpty()) {
@@ -64,10 +64,13 @@ public class UserService {
             userRepository.flush();
         }
 
-        User newUser = UserMapper.toEntity(userDTO);  // 기존 UserMapper를 그대로 사용
+        User newUser = UserMapper.toEntity(userDTO);
         newUser = userRepository.save(newUser);
+
         return UserMapper.toDTO(newUser);
     }
+
+
 
     public boolean checkPassword(String userId, String rawPassword) {
         User user = userRepository.findByUserId(userId);

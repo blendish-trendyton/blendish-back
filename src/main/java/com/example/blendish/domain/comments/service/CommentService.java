@@ -86,10 +86,12 @@ public class CommentService {
 
             log.info(String.valueOf(writeCommentDTO.getParentCommentId()));
 
-            // 부모객체
-            Comment parentComment = commentsRepository.findByCommentId(writeCommentDTO.getParentCommentId());
+            // 부모객체가 null인지 확인
+            Comment parentComment = null;
+            if (writeCommentDTO.getParentCommentId() != null) {
+                parentComment = commentsRepository.findByCommentId(writeCommentDTO.getParentCommentId());
+            }
 
-            log.info(String.valueOf(parentComment.getContent()));
 
             //레시피 객체
             Recipe recipe = recipeRepository.findByRecipeId(writeCommentDTO.getRecipeId());

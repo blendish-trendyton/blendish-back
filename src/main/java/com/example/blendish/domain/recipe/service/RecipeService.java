@@ -51,6 +51,7 @@ public class RecipeService {
                 .foodImage(imageUrl)
                 .user(user)
                 .likeCount(0)
+                .foodFlavors(addRecipeDTO.foodFlavors())
                 .isAiGenerated(false)
                 .ingredients(new ArrayList<>())
                 .steps(new ArrayList<>())
@@ -82,6 +83,7 @@ public class RecipeService {
                 .foodImage(null)
                 .user(user)
                 .likeCount(0)
+                .foodFlavors(addRecipeDTO.foodFlavors())
                 .isAiGenerated(true)
                 .aiSteps(new ArrayList<>())
                 .build();

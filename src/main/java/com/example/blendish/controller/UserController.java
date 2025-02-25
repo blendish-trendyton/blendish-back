@@ -44,12 +44,11 @@ public class UserController {
             summary = "사용자 정보 업데이트",
             description = "전체 사용자 정보를 전달받아 유저 정보를 업데이트 한다."
     )
-    @PutMapping(value = "/update", consumes = {"multipart/form-data"})
+    @PutMapping(value = "/update", consumes = "application/json")
     public ResponseEntity<ApiResponseTemplate<UserDTO>> updateUser(
-            @RequestPart("user") UserDTO userDTO,
-            @RequestPart(value = "profilePic", required = false) MultipartFile profilePic
-    ) throws IOException {
-        UserDTO updatedUser = userService.updateUser(userDTO, profilePic);
+            @RequestBody UserDTO userDTO
+    ) {
+        UserDTO updatedUser = userService.updateUser(userDTO);
         return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.OK, updatedUser));
     }
 

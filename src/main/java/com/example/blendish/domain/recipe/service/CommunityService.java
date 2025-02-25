@@ -283,12 +283,12 @@ public class CommunityService {
 
         //레시피 단계 가져오기
         List<RecipeSteps> recipeSteps =recipestepsRepository.findByRecipeRecipeId(recipeId);
-        List<RecipeStepsDTO> aiRecipeStepDTOS = new ArrayList<>();
+        List<RecipeStepsDTO> RecipeStepDTOS = new ArrayList<>();
 
         for(int i=0; i<recipeSteps.size(); i++){
             RecipeStepsDTO recipeStepsDTO = new RecipeStepsDTO(recipeSteps.get(i).getDetails(),recipeSteps.get(i).getStepImage(),
                     recipeSteps.get(i).getStepNum());
-            aiRecipeStepDTOS.add(recipeStepsDTO);
+            RecipeStepDTOS.add(recipeStepsDTO);
         }
 
         // 레시피 재료 가져오기
@@ -296,7 +296,7 @@ public class CommunityService {
         List<RecipeIngredientsDTO> ingredientsDTOS = new ArrayList<>();
 
         for(int i=0; i<Ingredients.size(); i++){
-            RecipeIngredientsDTO recipeIngredientsDTO = new RecipeIngredientsDTO(Ingredients.get(i).getAmount(),
+            RecipeIngredientsDTO recipeIngredientsDTO = new RecipeIngredientsDTO(Ingredients.get(i).getName(),
                     Ingredients.get(i).getAmount());
             ingredientsDTOS.add(recipeIngredientsDTO);
         }
@@ -307,7 +307,7 @@ public class CommunityService {
                 .level(recipe.getLevel())
                 .name(recipe.getName())
                 .ingredients(ingredientsDTOS)
-                .recipeSteps(aiRecipeStepDTOS)
+                .recipeSteps(RecipeStepDTOS)
                 .build();
 
     }

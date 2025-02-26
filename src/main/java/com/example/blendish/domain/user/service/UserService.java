@@ -50,25 +50,64 @@ public class UserService {
                 .map(UserMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public UserDTO updateUser(UserDTO userDTO) {
-        userDTO.setRole("ROLE_ADMIN");
+        // 1. 기존 사용자 조회
+        User user = userRepository.findByUserId(userDTO.getUserId());
+        if (user == null) {
+            throw new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
+        }
 
+        user.setEmail(userDTO.getEmail());
+        user.setHometown(userDTO.getHometown());
+        user.setCountry(userDTO.getCountry());
         if (userDTO.getUserPw() != null && !userDTO.getUserPw().isEmpty()) {
-            userDTO.setUserPw(bCryptPasswordEncoder.encode(userDTO.getUserPw()));
+            user.setUserPw(bCryptPasswordEncoder.encode(userDTO.getUserPw()));
+        }
+        user.setRole("ROLE_ADMIN");
+
+        List<TastePreferenceDTO> newTasteDTOList = userDTO.getTastePreference();
+        List<TastePreference> existingTasteList = user.getTastePreferences();
+        if (existingTasteList == null) {
+            existingTasteList = new java.util.ArrayList<>();
+            user.setTastePreferences(existingTasteList);
         }
 
-        User existingUser = userRepository.findByUserId(userDTO.getUserId());
-        if (existingUser != null) {
-            userRepository.delete(existingUser);
-            userRepository.flush();
+        int newSize = (newTasteDTOList != null) ? newTasteDTOList.size() : 0;
+        int oldSize = existingTasteList.size();
+        int commonSize = Math.min(newSize, oldSize);
+
+        for (int i = 0; i < commonSize; i++) {
+            TastePreference existingTP = existingTasteList.get(i);
+            TastePreferenceDTO newTP = newTasteDTOList.get(i);
+            existingTP.setTaste(newTP.getTaste());
+            existingTP.setSpicyLevel(newTP.getSpicyLevel());
         }
 
-        User newUser = UserMapper.toEntity(userDTO);
-        newUser = userRepository.save(newUser);
+        if (newSize > oldSize) {
+            for (int i = oldSize; i < newSize; i++) {
+                TastePreferenceDTO newTP = newTasteDTOList.get(i);
+                TastePreference tp = new TastePreference();
+                tp.setTaste(newTP.getTaste());
+                tp.setSpicyLevel(newTP.getSpicyLevel());
+                tp.setUser(user);
+                existingTasteList.add(tp);
+            }
+        }
+        else if (oldSize > newSize) {
+            for (int i = oldSize - 1; i >= newSize; i--) {
+                TastePreference removed = existingTasteList.remove(i);
+            }
+        }
 
-        return UserMapper.toDTO(newUser);
+        user = userRepository.saveAndFlush(user);
+
+        return UserMapper.toDTO(user);
     }
+
+
+
 
 
 
